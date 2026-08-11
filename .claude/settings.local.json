@@ -23,7 +23,22 @@
       "Bash(echo \"exit: $?\")",
       "Bash(git branch *)",
       "Bash(GIT_TERMINAL_PROMPT=0 timeout 120 git push -u origin main)",
-      "Bash(timeout 25 vercel whoami)"
+      "Bash(timeout 25 vercel whoami)",
+      "Bash(timeout 45 vercel env add ENQUIRY_TO_EMAIL production --force)",
+      "Bash(timeout 45 vercel env add ENQUIRY_PHONE production --force)",
+      "Bash(timeout 45 vercel env ls production)",
+      "Bash(grep -vE \"^$|Common next|^- \\\\`|Vercel Plugin\")",
+      "Bash(timeout 540 vercel --prod --yes)",
+      "Bash(rm -rf .vercel)",
+      "Bash(timeout 90 vercel link --yes --project portfolio)",
+      "Bash(timeout 60 vercel project inspect portfolio)",
+      "Bash(curl -s -o /dev/null -w \"deployment URL -> HTTP %{http_code}\\\\n\" https://portfolio-os2gkud3h-ryash6316-6184s-projects.vercel.app)",
+      "Bash(curl -s -o /dev/null -w 'HTTP %{http_code}  %{size_download} bytes\\\\n' https://portfolio-tau-lake-eelt3rkjmz.vercel.app)",
+      "Bash(curl -s https://portfolio-tau-lake-eelt3rkjmz.vercel.app)",
+      "Bash(timeout 45 vercel env add NEXT_PUBLIC_SITE_URL production --force)",
+      "Bash(curl -s https://portfolio-tau-lake-eelt3rkjmz.vercel.app/sitemap.xml)",
+      "Bash(git commit -q -m 'Pin Vercel framework preset to Next.js *)",
+      "Bash(GIT_TERMINAL_PROMPT=0 timeout 60 git push -u origin main)"
     ]
   }
 }
