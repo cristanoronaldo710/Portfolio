@@ -1,18 +1,32 @@
 @import "tailwindcss";
+@import "devicon/devicon.min.css";
 
 @theme {
-  /* Monochrome ink scale — all pairs below meet WCAG AA on --color-paper. */
-  --color-ink: #09090b;
-  --color-ink-soft: #3f3f46;
-  --color-ink-muted: #52525b;
-  --color-paper: #fafafa;
-  --color-surface: #ffffff;
-  --color-line: #e4e4e7;
-  --color-line-strong: #d4d4d8;
-  --color-accent: #2563eb;
+  /* Warm paper base — cream rather than clinical white. */
+  --color-canvas: #faf8f4;
+  --color-canvas-deep: #f4f0e8;
+  --color-subtle: #f2eee7;
+  --color-line: #ddd6ca;
+  --color-line-soft: #e9e3d9;
 
-  --font-display: var(--font-archivo), ui-sans-serif, system-ui, sans-serif;
-  --font-sans: var(--font-space-grotesk), ui-sans-serif, system-ui, sans-serif;
+  /* Warm ink scale — every pair clears WCAG AA on cream. */
+  --color-ink: #1c1a17;
+  --color-ink-soft: #45403a;
+  --color-ink-muted: #6f6862;
+
+  /* Dark panel */
+  --color-night: #0b0a09;
+  --color-night-soft: #17151280;
+  --color-night-line: #2d2924;
+  --color-night-ink: #f5f1e8;
+  --color-night-muted: #a39c92;
+
+  --color-accent: #1552b8;
+
+  --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-jetbrains), ui-monospace, "SF Mono", monospace;
+
+  --ease-out-quint: cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 :root {
@@ -21,47 +35,103 @@
 
 html {
   scroll-behavior: smooth;
-  /* Keep anchored sections clear of the sticky header. */
-  scroll-padding-top: 6rem;
+  scroll-padding-top: 5.5rem;
+  background-color: var(--color-canvas);
 }
 
 body {
-  background-color: var(--color-paper);
+  position: relative;
+  /* Warm wash rather than a flat fill — the page reads as lit, not printed. */
+  background-color: var(--color-canvas);
+  background-image:
+    radial-gradient(ellipse 80% 50% at 50% -10%, #fffdf9 0%, transparent 60%),
+    radial-gradient(ellipse 60% 40% at 100% 20%, #f6efe2 0%, transparent 65%),
+    radial-gradient(ellipse 70% 45% at 0% 60%, #f3f1ea 0%, transparent 62%);
+  background-attachment: fixed;
   color: var(--color-ink);
   font-family: var(--font-sans);
   -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  overflow-x: hidden;
 }
 
-/* Consistent, visible focus ring across every interactive element. */
+/* ── Film grain ────────────────────────────────────────────────
+   Fine fractal noise rasterised once from an SVG data URI, then
+   drifted in steps so it "boils" like real film stock.
+
+   Sized to 130% rather than the viewport so the drift never exposes
+   an edge, while keeping the blended layer small enough to composite
+   cheaply — a full-screen blend forces the page into one compositing
+   group, so its area matters for scroll performance. */
+.grain-layer {
+  position: fixed;
+  inset: -15%;
+  z-index: 60;
+  pointer-events: none;
+  opacity: 0.3;
+  mix-blend-mode: multiply;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.38'/%3E%3C/svg%3E");
+  animation: grain-drift 1s steps(1) infinite;
+  will-change: transform;
+  contain: strict;
+}
+
+/* Translate in whole pixels on a composited layer — percentages would
+   resample the noise every step and soften it into mush. */
+@keyframes grain-drift {
+  0% { transform: translate3d(0, 0, 0); }
+  20% { transform: translate3d(-6px, -4px, 0); }
+  40% { transform: translate3d(5px, -6px, 0); }
+  60% { transform: translate3d(-4px, 5px, 0); }
+  80% { transform: translate3d(6px, 3px, 0); }
+  100% { transform: translate3d(0, 0, 0); }
+}
+
+/* Phones gain the least from the boil and pay the most for it. */
+@media (max-width: 767px) {
+  .grain-layer {
+    animation: none;
+    opacity: 0.24;
+  }
+}
+
+/* Cinematic vignette — pulls the eye toward the centre column. */
+.vignette-layer {
+  position: fixed;
+  inset: 0;
+  z-index: 59;
+  pointer-events: none;
+  background: radial-gradient(
+    ellipse 92% 78% at 50% 45%,
+    transparent 55%,
+    rgba(52, 42, 28, 0.09) 100%
+  );
+}
+
+/* Optical tightening — large type needs negative tracking to read as premium. */
+.display-type {
+  letter-spacing: -0.035em;
+  line-height: 0.98;
+}
+
 :focus-visible {
   outline: 2px solid var(--color-accent);
   outline-offset: 3px;
-  border-radius: 2px;
+  border-radius: 4px;
+}
+
+.on-night :focus-visible {
+  outline-color: #ffffff;
 }
 
 ::selection {
   background-color: var(--color-ink);
-  color: var(--color-paper);
+  color: var(--color-canvas);
 }
 
-/* Scroll reveal — the element is only hidden once JS confirms it can reveal it,
-   so the page stays fully readable if JS fails. */
-[data-reveal] {
-  opacity: 1;
-}
-
-[data-reveal="pending"] {
-  opacity: 0;
-  transform: translateY(14px);
-}
-
-[data-reveal="shown"] {
-  opacity: 1;
-  transform: none;
-  transition:
-    opacity 500ms cubic-bezier(0.22, 1, 0.36, 1),
-    transform 500ms cubic-bezier(0.22, 1, 0.36, 1);
-  transition-delay: var(--reveal-delay, 0ms);
+[class^="devicon-"],
+[class*=" devicon-"] {
+  transition: color 300ms var(--ease-out-quint);
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -69,13 +139,8 @@ body {
     scroll-behavior: auto;
   }
 
-  [data-reveal="pending"] {
-    opacity: 1;
-    transform: none;
-  }
-
-  [data-reveal="shown"] {
-    transition: none;
+  .grain-layer {
+    animation: none;
   }
 
   *,

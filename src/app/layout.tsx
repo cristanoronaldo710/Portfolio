@@ -1,28 +1,60 @@
-import type { Metadata } from "next";
-import { Archivo, Space_Grotesk } from "next/font/google";
+import type { Metadata, Viewport } from "next";
+import { Inter, JetBrains_Mono } from "next/font/google";
 import { profile } from "@/content/profile";
 import "./globals.css";
 
-const archivo = Archivo({
-  variable: "--font-archivo",
+const inter = Inter({
+  variable: "--font-inter",
   subsets: ["latin"],
   display: "swap",
 });
 
-const spaceGrotesk = Space_Grotesk({
-  variable: "--font-space-grotesk",
+const jetbrainsMono = JetBrains_Mono({
+  variable: "--font-jetbrains",
   subsets: ["latin"],
+  weight: ["400", "500"],
   display: "swap",
 });
+
+/* Plain-text description for search results and link previews — strip the
+   **bold** / ==highlight== markers the on-page copy uses. */
+const description = `${profile.tagline} ${profile.taglineSub}`.replace(
+  /\*\*|==/g,
+  "",
+);
+
+const title = `${profile.name} — ${profile.role}`;
 
 export const metadata: Metadata = {
-  title: `${profile.name} — ${profile.role}`,
-  description: profile.tagline,
+  /* Set NEXT_PUBLIC_SITE_URL in your host's env once you have a domain;
+     without it, Open Graph image paths stay relative and previews break. */
+  metadataBase: new URL(
+    process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000",
+  ),
+  title,
+  description,
+  applicationName: profile.name,
+  authors: [{ name: profile.name }],
+  creator: profile.name,
+  alternates: { canonical: "/" },
   openGraph: {
-    title: `${profile.name} — ${profile.role}`,
-    description: profile.tagline,
+    title,
+    description,
     type: "website",
+    siteName: profile.name,
+    locale: "en_US",
   },
+  twitter: { card: "summary_large_image", title, description },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: { index: true, follow: true, "max-image-preview": "large" },
+  },
+};
+
+export const viewport: Viewport = {
+  themeColor: "#faf8f4",
+  colorScheme: "light",
 };
 
 export default function RootLayout({
@@ -33,9 +65,14 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${archivo.variable} ${spaceGrotesk.variable} h-full`}
+      className={`${inter.variable} ${jetbrainsMono.variable} h-full`}
     >
-      <body className="min-h-full">{children}</body>
+      <body className="min-h-full">
+        {children}
+        {/* Cinematic overlays sit above content but never intercept input. */}
+        <div aria-hidden="true" className="grain-layer" />
+        <div aria-hidden="true" className="vignette-layer" />
+      </body>
     </html>
   );
 }
