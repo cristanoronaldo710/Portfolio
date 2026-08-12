@@ -5,6 +5,7 @@ import { profile, socials, whatsappHref } from "@/content/profile";
 import { Reveal } from "./motion";
 import { Texture } from "./Atmosphere";
 import { EnquiryForm } from "./EnquiryForm";
+import { SplitHeading } from "./SplitHeading";
 import { ArrowIcon, WhatsAppIcon } from "./icons";
 
 export function Contact() {
@@ -37,12 +38,12 @@ export function Contact() {
               05 — Contact
             </p>
 
-            <h2
+            <SplitHeading
+              as="h2"
               id="contact-heading"
-              className="display-type mt-6 max-w-[16ch] text-balance text-[clamp(2.25rem,6.5vw,5rem)] font-semibold text-night-ink"
-            >
-              Let&rsquo;s build something.
-            </h2>
+              text="Let's build something."
+              className="display-type mt-6 max-w-[16ch] text-balance text-[clamp(2.25rem,6.5vw,5rem)] text-night-ink"
+            />
 
             <div className="mt-10 grid gap-12 lg:grid-cols-[minmax(0,1fr)_minmax(0,20rem)] lg:gap-16">
               <div>

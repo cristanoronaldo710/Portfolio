@@ -8,7 +8,7 @@ import {
 } from "framer-motion";
 import { useRef } from "react";
 import { profile, socials, stats, whatsappHref } from "@/content/profile";
-import { EASE, useMotionScale } from "./motion";
+import { EASE, useJsProgress, useMotionScale } from "./motion";
 import { LightLick, Texture } from "./Atmosphere";
 import { RichText } from "./RichText";
 import { ArrowIcon, WhatsAppIcon } from "./icons";
@@ -21,15 +21,18 @@ export function Hero() {
   /* Foreground and background drift at different rates as you scroll away,
      which is what actually reads as depth. Travel is scaled per device so a
      flick on a phone doesn't rip the hero off the screen. */
-  const { scrollYProgress } = useScroll({
+  const { scrollYProgress: rawProgress } = useScroll({
     target: ref,
     offset: ["start start", "end start"],
   });
+  /* contentOpacity's range below ends at 0.85, not 1 — see useJsProgress for
+     why a narrowed range needs de-accelerating. */
+  const scrollYProgress = useJsProgress(rawProgress);
 
-  const contentY = useTransform(scrollYProgress, [0, 1], [0, 48 * scale]);
+  const contentY = useTransform(scrollYProgress, [0, 1], [0, 66 * scale]);
   const contentOpacity = useTransform(scrollYProgress, [0, 0.85], [1, 0.15]);
-  const auroraY = useTransform(scrollYProgress, [0, 1], [0, 110 * scale]);
-  const auroraScale = useTransform(scrollYProgress, [0, 1], [1, 1 + 0.12 * scale]);
+  const auroraY = useTransform(scrollYProgress, [0, 1], [0, 150 * scale]);
+  const auroraScale = useTransform(scrollYProgress, [0, 1], [1, 1 + 0.16 * scale]);
 
   const motionStyle =
     reduce || scale === 0 ? undefined : { y: contentY, opacity: contentOpacity };
@@ -81,7 +84,7 @@ export function Hero() {
           initial={{ opacity: 0, y: 22 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 0.06, ease: EASE }}
-          className="display-type text-[clamp(3rem,10.5vw,8.5rem)] font-semibold text-ink"
+          className="display-type text-[clamp(3rem,10.5vw,8.5rem)] text-ink"
         >
           {profile.name}
         </motion.h1>

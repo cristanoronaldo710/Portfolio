@@ -60,7 +60,7 @@ export const whatsappHref = `https://wa.me/${profile.whatsapp.number}?text=${enc
 
 /** Small numbers under the hero. Delete any you don't want to claim yet. */
 export const stats = [
-  { value: "10+", label: "Projects shipped" },
+  { value: "6+", label: "Projects shipped" },
   { value: "15+", label: "Technologies" },
   { value: "2+", label: "Years building" },
 ];
@@ -92,6 +92,15 @@ export type CaseStudy = {
   images: { src?: string; caption: string }[];
 };
 
+/** Icon key used for the themed placeholder — see ProjectVisual.tsx for the mapping. */
+export type ProjectIconKey =
+  | "media"
+  | "focus"
+  | "cafe"
+  | "barber"
+  | "kanban"
+  | "ticket";
+
 export type Project = {
   /** URL-safe id. Used for the case study anchor. */
   slug: string;
@@ -108,95 +117,218 @@ export type Project = {
   repo?: string;
   /**
    * Drop an image in /public/work/ and reference it as "/work/name.jpg".
-   * Leave undefined to show a clean typographic placeholder instead.
+   * Leave undefined to show a themed icon placeholder instead (see `theme`).
    */
   image?: string;
+  /** Icon + accent shown in place of a real screenshot, until one exists. */
+  theme?: { icon: ProjectIconKey; accent: string };
   /** Makes the card span the full width on desktop. Use for your best 1–2. */
   featured?: boolean;
   caseStudy?: CaseStudy;
 };
 
+/**
+ * ⚠ AI-DRAFTED CASE STUDIES — titles are your real projects, but I only had
+ * the names (from your checklist), not the actual details. Everything below
+ * — problem, solution, stack choices, the numbers, the "what I'd change"
+ * — is my plausible best guess from the name alone, written in your voice,
+ * NOT verified fact. Treat this as a first draft to correct, not a
+ * transcript of what you actually built.
+ *
+ * Before this goes anywhere someone might ask you about specifics (an
+ * interview, a client), read each one and fix anything that isn't true —
+ * the real stack, the real problem, the real trade-off you made. Same
+ * `summary`/`tags`/`year` fields as before still need your input too.
+ */
 export const projects: Project[] = [
   {
-    slug: "commerce-platform",
-    title: "Commerce Platform",
+    slug: "media-os",
+    title: "Media OS",
     client: "Personal project",
-    year: "2025",
+    year: "20XX",
     summary:
-      "Storefront and admin dashboard sharing **one type-safe schema**, built to stay quick on a mid-range phone.",
-    tags: ["Next.js", "TypeScript", "PostgreSQL", "Prisma"],
+      "A media library built on **tags and collections instead of folders** — searchable metadata, thumbnail-first browsing, one canonical asset per version.",
+    tags: ["Next.js", "TypeScript", "PostgreSQL"],
     featured: true,
+    theme: { icon: "media", accent: "#7c6fd6" },
     caseStudy: {
-      role: "Design, frontend, API and schema",
+      role: "Design, frontend, and the media pipeline",
       problem:
-        "Storefront templates look fine in a desktop demo and fall apart in the real world: **several hundred kilobytes of JavaScript** before a single product appears, and an admin panel bolted on as a separate app with duplicated types.\n\nThe moment those two drift, ==orders start failing in ways nobody notices until a customer complains==.",
+        "Small teams end up with footage and assets spread across drives, chat threads, and a dozen \"FINAL_v3\" filenames. Nobody can tell which cut is actually final, and ==finding a specific clip from three months ago takes longer than reshooting it==.\n\nA folder tree assumes you already know where you put something. Most people don't.",
       solution:
-        "One repo, one schema, two surfaces. The database schema is the **single source of truth** — Prisma generates the types, both surfaces import the same ones. A column rename becomes a compile error, not a 2am bug.\n\nThe catalogue renders on the server and ships ==almost no JavaScript==; only the cart and filters hydrate. The admin side takes the opposite trade — it's behind a login, nobody's bouncing off it, so it loads a heavier bundle for a better editing experience.",
+        "**Tags and collections instead of folders.** Every asset gets searchable metadata at upload — project, type, status — so the same clip can live in three collections without three copies.\n\nThe browser is thumbnail-first and scrubs on hover, so you can identify a take without opening it. Version history sits on the asset itself: one canonical item, a stack of versions underneath, ==never a duplicate file with a different name==.",
       stack: [
-        { name: "Next.js", why: "Server rendering for the catalogue, so the first paint carries real content instead of a spinner." },
-        { name: "TypeScript", why: "The schema-to-UI type chain is the whole point — it is what stops the two surfaces drifting apart." },
-        { name: "PostgreSQL", why: "Orders and inventory are relational and need real transactions. This was never a document-store problem." },
-        { name: "Prisma", why: "Generates types from the schema and makes migrations reviewable in a pull request." },
-        { name: "Tailwind CSS", why: "Keeps styling next to the markup, so deleting a component deletes its CSS too." },
+        { name: "Next.js", why: "Server-rendered library views stay fast even paging through a few thousand thumbnails." },
+        { name: "TypeScript", why: "Asset metadata has real shape — type, status, version — worth enforcing end to end." },
+        { name: "PostgreSQL", why: "Tags and collections are a many-to-many relationship. That's a database problem, not a file-system one." },
+        { name: "Object storage (S3-compatible)", why: "Keeps large media out of the database, behind signed URLs instead of public paths." },
+        { name: "Tailwind CSS", why: "A dense, thumbnail-heavy interface needed tight spacing more than custom components." },
       ],
       summary:
-        "Storefront and admin dashboard on **one type-safe data layer**. The catalogue is server-rendered and nearly JavaScript-free; the admin panel trades bundle size for editing comfort, because its users are already committed.",
+        "A media library built around **tags and collections, not folders** — searchable metadata at upload, thumbnail-first browsing, and one canonical asset per version instead of a graveyard of duplicates.",
       conclusion:
-        "The single-schema decision paid for itself **the first time I renamed a field** and got a compile error instead of a broken checkout.\n\nWhat I'd change: I reached for a state library on the cart before I had a problem that needed one, then replaced it with a reducer and context in noticeably less code. ==Next time I'd let the pain arrive first==.",
+        "Treating organization as the actual product — not a folder tree bolted onto storage — was the right call early, before the library filled up with content nobody could find again.\n\n==What I'd tighten next==: bulk tagging on import, since tagging one file at a time doesn't survive contact with a real shoot's worth of footage.",
       images: [
-        { caption: "Storefront — catalogue with filters applied" },
-        { caption: "Product detail, mobile" },
-        { caption: "Admin dashboard — order queue" },
+        { caption: "Library — thumbnail grid with collection filters" },
+        { caption: "Asset detail — version history" },
       ],
     },
   },
   {
-    slug: "realtime-collab",
-    title: "Realtime Collaboration Tool",
+    slug: "neurofence",
+    title: "Neurofence",
     client: "Personal project",
-    year: "2024",
+    year: "20XX",
     summary:
-      "A shared board several people edit at once — where **going offline mid-edit is a normal event**, not an error.",
-    tags: ["React", "Node.js", "Socket.IO", "Redis", "MongoDB"],
+      "A focus tool built on **friction, not willpower** — commit to a session ahead of time, and the block holds regardless of how you feel five minutes in.",
+    tags: ["Next.js", "TypeScript", "Browser extension"],
     featured: true,
+    theme: { icon: "focus", accent: "#3f9e7a" },
     caseStudy: {
-      role: "Full stack — realtime sync, persistence, and UI",
+      role: "Design and frontend, focus-session logic",
       problem:
-        "Collaborative editing is easy until two people touch the same thing at once. **Last write wins** feels fine with one tester and loses work the moment there are two.\n\nThe harder half is the network. Connections drop in lifts, on trains, on hotel wifi. ==A collaboration tool nobody trusts is worse than a text file==.",
+        "Most blockers are one tap away from being disabled, which means they only work on days you don't actually need them. Apps that ask ==how much willpower you have left== are asking the wrong question — by the time you're deciding whether to open the blocked app, you've already lost.",
       solution:
-        "Edits are modelled as **intent, not snapshots** — \"move this card here\", never \"here is the whole board\". Each operation carries a client id and sequence number, so the server orders them deterministically and drops duplicates on reconnect.\n\nThe client applies changes optimistically and keeps an unacknowledged queue. ==Lose the connection and editing just keeps working==; reconnect and the queue replays against the authoritative order.\n\nRedis holds hot state and the pub/sub channel that fans changes across server instances. MongoDB stores durable history. The UI stays honest about it — live cursors with names, and an indicator that says **reconnecting** rather than pretending.",
+        "**Friction, not willpower.** A focus session is a commitment made before you need it — pick a duration and what's blocked, and it holds for that window regardless of how you feel five minutes in.\n\nThe dashboard reports where attention actually went, in plain numbers, ==not a guilt-driven streak counter==. The goal was a tool that treats discipline as a design problem, not a character flaw.",
       stack: [
-        { name: "Socket.IO", why: "Handles reconnection and transport fallback, which is most of what makes realtime painful to write by hand." },
-        { name: "Redis", why: "Hot state plus pub/sub, so multiple server instances stay in sync without talking to each other directly." },
-        { name: "MongoDB", why: "Boards are deeply nested documents read as a whole. Forcing that into tables would have been fighting the shape of the data." },
-        { name: "Node.js", why: "One language across client and server for the operation types, which are the trickiest part to keep aligned." },
-        { name: "React", why: "The board is a pure function of board state — a good fit for optimistic updates and rollback." },
+        { name: "Browser extension APIs", why: "Blocking has to happen at the browser level, before a distracting page even loads." },
+        { name: "Next.js", why: "The session dashboard and history live outside the extension, as a normal web app." },
+        { name: "TypeScript", why: "Session state — active, blocked list, time remaining — is exactly the kind of state machine worth typing properly." },
+        { name: "IndexedDB", why: "Session history needs to survive offline and sync later, with no reason to round-trip to a server for local stats." },
       ],
       summary:
-        "A multiplayer board with optimistic local edits, an operation queue that **survives disconnection**, and Redis pub/sub so it scales past one server process.",
+        "A **commitment-device** focus blocker: sessions locked in ahead of time, plain-number attention reports instead of guilt streaks, blocking enforced at the browser level so it can't be talked out of.",
       conclusion:
-        "Modelling edits as intent rather than snapshots was the decision everything rested on — it turned conflict resolution into **a sorting problem instead of a guessing game**.\n\nI under-estimated the UI work: showing people what the system is doing during a reconnect took as long as the sync logic, and ==mattered just as much==. If I rebuilt it I'd reach for an established CRDT library, now that I understand what it's actually doing.",
+        "The friction-over-willpower framing held up — the sessions people actually kept were the ones committed to in advance, not the ones with an escape hatch.\n\n==Next==: shared sessions, so a block can be a team agreement instead of a solo one.",
       images: [
-        { caption: "Board with three collaborators and live cursors" },
-        { caption: "Reconnection state — queued edits held locally" },
+        { caption: "Session start — duration and blocked list" },
+        { caption: "Attention report, plain numbers" },
       ],
     },
   },
   {
-    slug: "project-three",
-    title: "Project Three",
-    client: "Open source",
-    year: "2024",
-    summary: "Keep these to a line or two so the grid stays even.",
-    tags: ["Python", "Django"],
+    slug: "cafe-crm",
+    title: "Cafe (CRM)",
+    client: "Personal project",
+    year: "20XX",
+    summary:
+      "A counter-sized CRM — order history, customer notes, and a simple points-per-order loyalty rule, built for speed during a rush.",
+    tags: ["Next.js", "PostgreSQL", "Node.js"],
+    theme: { icon: "cafe", accent: "#b5793a" },
+    caseStudy: {
+      role: "Full stack — schema, backend, and counter-facing UI",
+      problem:
+        "Small cafes run loyalty and regulars out of a notebook or a spreadsheet the owner half-remembers to update. There's no real answer to \"who are our regulars\" beyond a feeling — ==the data that would justify a loyalty program was never collected in the first place==.",
+      solution:
+        "A CRM sized for a counter, not an enterprise. Order history and customer notes live on one screen, and the loyalty layer is a simple points-per-order rule rather than a configurable rules engine nobody at a five-person cafe needed.\n\nThe staff-facing UI stays **deliberately minimal** — big touch targets, one screen per task — because it has to work fast during a rush, not look impressive in a demo.",
+      stack: [
+        { name: "Next.js", why: "One app for the counter view and the owner's reporting view, sharing the same data layer." },
+        { name: "PostgreSQL", why: "Orders, customers and loyalty points are relational, with running totals that need to stay correct." },
+        { name: "Node.js / Express", why: "A small, boring API layer — this didn't need more than CRUD plus one loyalty-points rule." },
+        { name: "Tailwind CSS", why: "Fast to hit large, thumb-friendly touch targets for a screen that lives next to a till." },
+      ],
+      summary:
+        "A **counter-sized CRM** for a small cafe — order history, customer notes, and a simple points-per-order loyalty rule, built for speed during a rush rather than configurability nobody needed.",
+      conclusion:
+        "Keeping the loyalty logic to one simple rule instead of a rules engine was the right trade — it shipped fast and the owner could explain it to a new hire in one sentence.\n\n==What I'd add==: a lightweight low-stock nudge, since inventory kept coming up as the next thing owners wanted to track.",
+      images: [
+        { caption: "Counter view — order entry and customer lookup" },
+        { caption: "Owner dashboard — regulars and loyalty points" },
+      ],
+    },
   },
   {
-    slug: "project-four",
-    title: "Project Four",
+    slug: "barber-shop",
+    title: "Barber Shop",
     client: "Personal project",
-    year: "2024",
-    summary: "Learning projects count — label them honestly and they still earn a place.",
-    tags: ["React", "Firebase"],
+    year: "20XX",
+    summary:
+      "A real-time booking calendar shared between online bookings and walk-ins, with SMS reminders cutting no-shows.",
+    tags: ["Next.js", "PostgreSQL", "Twilio"],
+    theme: { icon: "barber", accent: "#3a4a5c" },
+    caseStudy: {
+      role: "Full stack — booking logic and calendar UI",
+      problem:
+        "Walk-ins and online bookings collide constantly without a shared source of truth — a barber double-booked on paper looks fine right up until two clients arrive at once. ==No-shows are expensive, and nobody was tracking those either==.",
+      solution:
+        "One real-time calendar per barber, so an online booking instantly blocks that slot for walk-ins too. Clients get a reminder before their appointment, and **no-show history quietly informs which slots get held with a deposit** versus booked freely.\n\nThe booking flow is three taps — service, barber, time — because a client comparing five barbershop apps at 11pm will bounce off anything longer.",
+      stack: [
+        { name: "Next.js", why: "Booking pages need to be fast on mobile — most bookings happen on a phone, one-handed." },
+        { name: "PostgreSQL", why: "Availability is a real scheduling problem — overlapping slots and per-barber calendars need actual constraints." },
+        { name: "Node.js", why: "Reminder scheduling runs as background jobs, decoupled from the request that created the booking." },
+        { name: "Twilio (SMS)", why: "Email reminders get ignored; a text the morning of an appointment is what actually cuts no-shows." },
+      ],
+      summary:
+        "A **real-time booking calendar** shared between online bookings and walk-ins, with SMS reminders and no-show history informing which slots need a deposit.",
+      conclusion:
+        "Making walk-ins and online bookings share one calendar — instead of two systems someone has to reconcile by hand — was the decision that actually stopped double-bookings.\n\n==Next==: letting a client rebook their usual barber and slot in two taps, since that's most of what a regular actually wants.",
+      images: [
+        { caption: "Booking flow — service, barber, time" },
+        { caption: "Barber's day view" },
+      ],
+    },
+  },
+  {
+    slug: "jira-clone",
+    title: "Jira Clone",
+    client: "Personal project",
+    year: "20XX",
+    summary:
+      "A kanban clone built to learn the **relational model** underneath a real project-management tool, not just the drag-and-drop.",
+    tags: ["Next.js", "TypeScript", "PostgreSQL"],
+    theme: { icon: "kanban", accent: "#3b7dd8" },
+    caseStudy: {
+      role: "Full stack — learning project",
+      problem:
+        "Understanding how a real project-management tool models its data — boards, sprints, issue types — is faster to learn by building one than by reading about one. ==Most tutorials stop at a kanban board with three columns==; the interesting part is everything underneath it.",
+      solution:
+        "A kanban board with drag-and-drop, issue types, and sprints, but the actual point was **getting the relational model right** — issues belong to epics, epics belong to sprints, and moving a card is a tracked status change, not just a DOM reorder.\n\nFeature breadth was deliberately capped so the data layer could be correct rather than wide.",
+      stack: [
+        { name: "Next.js", why: "Board and backlog views share the same issue data without a separate API layer to keep in sync." },
+        { name: "TypeScript", why: "Issue → epic → sprint relationships are easy to get subtly wrong without types." },
+        { name: "PostgreSQL", why: "A real relational schema for issues, epics and sprints — the part actual PM tools get right and tutorials skip." },
+        { name: "dnd-kit", why: "Drag-and-drop that persists a real status change, not a visual reorder that resets on refresh." },
+      ],
+      summary:
+        "A kanban clone built to **learn the data model**, not just the drag-and-drop — issues, epics and sprints as a real relational schema, with status changes tracked as history.",
+      conclusion:
+        "Capping the feature list early was the right call — a correct three-column board taught more than a half-working ten-column one would have.\n\n==Learning project, labelled honestly==: it clones the mechanics, not the years of edge cases the real thing has actually solved.",
+      images: [
+        { caption: "Board — drag-and-drop issue status" },
+        { caption: "Backlog — issues grouped by epic" },
+      ],
+    },
+  },
+  {
+    slug: "itsm",
+    title: "ITSM",
+    client: "Personal project",
+    year: "20XX",
+    summary:
+      "A lightweight IT service-management tool — four-state ticket lifecycle, SLA timers that actually escalate, sized for a small team.",
+    tags: ["Next.js", "PostgreSQL", "Node.js"],
+    theme: { icon: "ticket", accent: "#6b7280" },
+    caseStudy: {
+      role: "Full stack — ticketing and SLA logic",
+      problem:
+        "Enterprise ITSM tools are built for organizations with a dedicated admin to configure them. A small IT team just wants ==a ticket queue that doesn't require a training session to use==.",
+      solution:
+        "A ticket lifecycle kept to four states — open, in progress, resolved, closed — with **SLA timers that actually escalate** instead of displaying a countdown nobody checks. A minimal knowledge base sits next to the queue so common fixes get linked instead of re-typed.\n\nRole-based access is two roles, not twelve, because that's what a small team actually has.",
+      stack: [
+        { name: "Next.js", why: "The ticket queue and knowledge base share one app, so linking an article to a ticket is one lookup, not a context switch." },
+        { name: "PostgreSQL", why: "SLA timers and escalation rules need reliable, queryable timestamps — not something to fake client-side." },
+        { name: "Node.js", why: "A background job checks SLA breaches on a schedule and fires escalations independently of anyone having the app open." },
+        { name: "Role-based access (custom)", why: "Two roles — requester and agent — covers what a small team needs without a permissions system to maintain." },
+      ],
+      summary:
+        "A **lightweight ITSM** — four-state ticket lifecycle, SLA timers that actually escalate, and a knowledge base linked directly into tickets, sized for a small IT team instead of an enterprise one.",
+      conclusion:
+        "Keeping SLA escalation server-driven rather than a client-side countdown was the detail that made it trustworthy — a timer nobody enforces is just decoration.\n\n==Next==: auto-suggesting a knowledge-base article from the ticket's text, since most tickets turn out to repeat the same handful of fixes.",
+      images: [
+        { caption: "Ticket queue with SLA status" },
+        { caption: "Ticket detail — linked knowledge base article" },
+      ],
+    },
   },
 ];
 
@@ -282,15 +414,20 @@ export type ExperienceEntry = {
 
 export const experience: ExperienceEntry[] = [
   {
-    role: "Your role",
-    org: "Company name",
-    period: "2024 — Present",
-    description: "One line on scope and what you shipped.",
+    // LinkedIn's role title says "Python Developer"; the description on the
+    // same entry says "Full-Stack Developer" — kept both as literally shown.
+    // Worth reconciling on LinkedIn if one is stale.
+    role: "Python Developer",
+    org: "Vyatirikht · Freelance",
+    period: "Jan 2025 — Present",
+    description:
+      "Full-stack developer role — designing, developing and maintaining web applications and digital products across frontend and backend systems.",
   },
   {
-    role: "Earlier role",
-    org: "Company name",
-    period: "2023 — 2024",
+    role: "Python Developer",
+    org: "Heuristic Technopark Pvt Ltd · Internship",
+    period: "Jan 2023 — Apr 2023",
+    description: "Python, Django, and related backend work.",
   },
 ];
 
@@ -302,20 +439,20 @@ export type EducationEntry = {
 };
 
 /**
- * ⚠ PLACEHOLDER — replace with your real education from LinkedIn.
- * LinkedIn requires a login, so these could not be read automatically.
+ * ⚠ STILL PLACEHOLDER — degree confirmed (BCA), but school and dates are not.
+ * LinkedIn requires a login, so these couldn't be read automatically — fill
+ * in `school` and `period` (and `detail` if you want a grade/specialisation).
  */
 export const education: EducationEntry[] = [
   {
-    degree: "Your degree — e.g. B.Tech, Computer Science",
+    degree: "Bachelor of Computer Application (BCA)",
     school: "Your college or university",
-    period: "2021 — 2025",
-    detail: "Optional: grade, specialisation, or a notable achievement.",
+    period: "20XX — 20XX",
   },
   {
     degree: "Higher Secondary / Class XII",
     school: "Your school",
-    period: "2019 — 2021",
+    period: "20XX — 20XX",
   },
 ];
 
@@ -330,26 +467,53 @@ export type Certification = {
   credentialId?: string;
 };
 
-/**
- * ⚠ PLACEHOLDER — replace with your real certifications from LinkedIn.
- * LinkedIn requires a login, so these could not be read automatically.
- */
 export const certifications: Certification[] = [
   {
-    name: "Certification name",
-    issuer: "Issuing organisation",
-    date: "2025",
-    href: "https://example.com/credential",
-    credentialId: "ABC123",
+    name: "Junior Cybersecurity Analyst Career Path",
+    issuer: "Cisco",
+    date: "Sep 2025",
   },
   {
-    name: "Another certification",
-    issuer: "Issuing organisation",
-    date: "2024",
+    name: "AI Aware Badge - AI For All",
+    issuer: "United Latino Students Association",
+    date: "Sep 2025",
+    // Shown on LinkedIn as this literal string, not a normal-looking ID —
+    // worth checking the badge issuer's page in case it's a display bug.
+    credentialId: "U2FsdGVkX1p1L2u3SyoOs1L2a3S4h6GTiys1L2a3S4hyA4q1iYwkxnys1L2a3S4huDomBQqrYe1Q2uAl",
   },
   {
-    name: "A third certification",
-    issuer: "Issuing organisation",
-    date: "2024",
+    name: "Certificate of Attendance",
+    issuer: "Hacker School (a subsidiary of Cartel Software Pvt. Ltd.)",
+    date: "Feb 2025",
+    credentialId: "743544",
+  },
+  {
+    // Title/issuer as entered on LinkedIn — likely swapped by mistake there
+    // (reads like "Hacking School, a unit of One Byte Labs"). Fix on
+    // LinkedIn and here if so.
+    name: "A unit of one byte labs",
+    issuer: "Hacking School",
+    date: "Aug 2025",
+  },
+  {
+    name: "Machine Learning I",
+    issuer: "Columbia+",
+    date: "Aug 2025",
+    href: "https://badges.plus.columbia.edu/d12c69f8-e206-470e-97c8-91cecf0e1bef",
+    credentialId: "159358790",
+  },
+  {
+    name: "Deloitte Australia - Cyber Job Simulation",
+    issuer: "Forage",
+    date: "Feb 2025",
+    href: "https://forage-uploads-prod.s3.amazonaws.com/completion-certificates/9PBTqmSxAf6zZTseP/E9pA6qsdbeyEkp3ti_9PBTqmSxAf6zZTseP_S5ztc9auXn8crnnLv_1740171237739_completion_certificate.pdf",
+    credentialId: "WByXrdxBKPJwCJ9bi",
+  },
+  {
+    name: "Tata Group - Cybersecurity Analyst Job Simulation",
+    issuer: "Forage",
+    date: "Dec 2024",
+    href: "https://forage-uploads-prod.s3.amazonaws.com/completion-certificates/ifobHAoMjQs9s6bKS/gmf3ypEXBj2wvfQWC_ifobHAoMjQs9s6bKS_S5ztc9auXn8crnnLv_1735122467964_completion_certificate.pdf",
+    credentialId: "pHqcGBkFhTQRh7pDc",
   },
 ];

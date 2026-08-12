@@ -24,6 +24,7 @@
   --color-accent: #1552b8;
 
   --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+  --font-display: var(--font-instrument), ui-serif, Georgia, serif;
   --font-mono: var(--font-jetbrains), ui-monospace, "SF Mono", monospace;
 
   --ease-out-quint: cubic-bezier(0.22, 1, 0.36, 1);
@@ -108,10 +109,16 @@ body {
   );
 }
 
-/* Optical tightening — large type needs negative tracking to read as premium. */
+/* Display type. A serif at large sizes needs far less negative tracking than a
+   grotesque — Inter wanted -0.035em, Instrument Serif falls apart past -0.02em
+   because the thin strokes start colliding. */
 .display-type {
-  letter-spacing: -0.035em;
-  line-height: 0.98;
+  font-family: var(--font-display);
+  font-weight: 400;
+  letter-spacing: -0.018em;
+  line-height: 1;
+  /* Never let the browser fake a heavier weight; only 400 exists. */
+  font-synthesis-weight: none;
 }
 
 :focus-visible {

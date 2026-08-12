@@ -1,7 +1,7 @@
 import { profile } from "@/content/profile";
 import { GlassSheen } from "./GlassSheen";
-import { RichText } from "./RichText";
-import { Parallax, Reveal, Stagger, StaggerItem } from "./motion";
+import { Parallax, Stagger, StaggerItem } from "./motion";
+import { PinnedAboutReveal } from "./PinnedReveal";
 import { SectionHeading } from "./SectionHeading";
 
 const principles = [
@@ -20,47 +20,40 @@ const principles = [
 ];
 
 export function About() {
+  /* Built once, handed to PinnedAboutReveal, which renders it beside either
+     the pinned paragraph crossfade (roomy desktop) or the plain stacked
+     layout (everywhere else) — same markup either way. */
+  const aside = (
+    <Parallax>
+      <Stagger className="space-y-4">
+        {principles.map((principle) => (
+          <StaggerItem key={principle.title}>
+            <GlassSheen className="rounded-2xl" size={260}>
+              <div className="rounded-2xl border border-line-soft bg-subtle/80 p-6 backdrop-blur-xl transition-colors duration-500 hover:border-line">
+                <h3 className="font-semibold tracking-[-0.01em] text-ink">
+                  {principle.title}
+                </h3>
+                <p className="mt-2 text-[15px] leading-relaxed text-ink-muted">
+                  {principle.body}
+                </p>
+              </div>
+            </GlassSheen>
+          </StaggerItem>
+        ))}
+      </Stagger>
+    </Parallax>
+  );
+
   return (
     <section
       id="about"
       aria-labelledby="about-heading"
       className="mx-auto max-w-6xl px-6 py-24 sm:px-8 sm:py-32"
     >
-      <div className="grid gap-16 lg:grid-cols-[minmax(0,1fr)_minmax(0,26rem)] lg:gap-24">
-        <div>
-          <SectionHeading eyebrow="03 — About" title="How I work." id="about-heading" />
+      <SectionHeading eyebrow="03 — About" title="How I work." id="about-heading" />
 
-          <Reveal delay={0.1}>
-            <div className="mt-10 space-y-6 text-lg leading-relaxed text-ink-soft">
-              {profile.about.map((paragraph, index) => (
-                <p key={index} className="max-w-[58ch]">
-                  <RichText text={paragraph} />
-                </p>
-              ))}
-            </div>
-          </Reveal>
-        </div>
-
-        {/* Drifts against the scroll so the two columns feel layered rather
-            than pasted side by side. */}
-        <Parallax distance={34}>
-          <Stagger className="space-y-4">
-            {principles.map((principle) => (
-              <StaggerItem key={principle.title}>
-                <GlassSheen className="rounded-2xl" size={260}>
-                  <div className="rounded-2xl border border-line-soft bg-subtle/80 p-6 backdrop-blur-xl transition-colors duration-500 hover:border-line">
-                    <h3 className="font-semibold tracking-[-0.01em] text-ink">
-                      {principle.title}
-                    </h3>
-                    <p className="mt-2 text-[15px] leading-relaxed text-ink-muted">
-                      {principle.body}
-                    </p>
-                  </div>
-                </GlassSheen>
-              </StaggerItem>
-            ))}
-          </Stagger>
-        </Parallax>
+      <div className="mt-16">
+        <PinnedAboutReveal paragraphs={profile.about} aside={aside} />
       </div>
     </section>
   );

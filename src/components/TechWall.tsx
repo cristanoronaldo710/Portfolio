@@ -13,6 +13,7 @@ import { useMemo, useRef, useState, type PointerEvent } from "react";
 import { techStack, type Tech } from "@/content/profile";
 import { EASE, Reveal } from "./motion";
 import { Texture } from "./Atmosphere";
+import { SplitHeading } from "./SplitHeading";
 
 const ALL = "All";
 
@@ -90,25 +91,28 @@ export function TechWall() {
       />
 
       <div className="mx-auto max-w-6xl px-6 sm:px-8">
-        <Reveal>
-          <div className="flex flex-wrap items-end justify-between gap-x-10 gap-y-6">
-            <div>
+        <div className="flex flex-wrap items-end justify-between gap-x-10 gap-y-6">
+          <div>
+            <Reveal>
               <p className="font-mono text-xs uppercase tracking-[0.22em] text-night-muted">
                 01 — Stack
               </p>
-              <h2
-                id="stack-heading"
-                className="display-type mt-4 text-balance text-[clamp(2rem,5vw,3.75rem)] font-semibold text-night-ink"
-              >
-                The tools I reach for.
-              </h2>
-            </div>
+            </Reveal>
 
+            <SplitHeading
+              as="h2"
+              id="stack-heading"
+              text="The tools I reach for."
+              className="display-type mt-4 text-balance text-[clamp(2rem,5vw,3.75rem)] text-night-ink"
+            />
+          </div>
+
+          <Reveal delay={0.1}>
             <p className="max-w-[34ch] text-[15px] leading-relaxed text-night-muted">
               Filter by layer, or hover any tile to bring it to life.
             </p>
-          </div>
-        </Reveal>
+          </Reveal>
+        </div>
 
         {/* Glass filter bar — the active pill is a shared layout element, so it
             slides between filters instead of cutting. */}

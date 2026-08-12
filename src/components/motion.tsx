@@ -6,12 +6,35 @@ import {
   useScroll,
   useSpring,
   useTransform,
+  type MotionValue,
   type Variants,
 } from "framer-motion";
 import { useEffect, useRef, useState, type ReactNode } from "react";
 
 /** Decisive out, gentle settle. */
 export const EASE = [0.22, 1, 0.36, 1] as const;
+
+/**
+ * De-accelerates a scroll-linked progress value.
+ *
+ * A target-based `useScroll()` silently upgrades to a native CSS
+ * ScrollTimeline/ViewTimeline on browsers that support one — a real perf win
+ * for a plain 0→1 range, but it does not compose correctly with a downstream
+ * `useTransform` that uses a narrower or offset custom range (e.g.
+ * `[0.75, 0.8, 1]`, or anything that doesn't span the full 0→1). The native
+ * timeline drives the value directly outside the JS clamp/interpolate path,
+ * and produces the wrong output for input outside its own segment instead of
+ * clamping to the nearest keyframe.
+ *
+ * Passing the value through a plain JS function transform opts back out of
+ * acceleration for everything chained after it — Framer only inherits the
+ * native path when the transformer is an array-based range, not a function.
+ * Use this on any `scrollYProgress` before feeding it into a `useTransform`
+ * whose input range isn't exactly `[0, 1]`.
+ */
+export function useJsProgress(value: MotionValue<number>) {
+  return useTransform(value, (v) => v);
+}
 
 /**
  * How much parallax this visitor should get.
@@ -157,7 +180,7 @@ type ParallaxProps = {
  * Moves content gently against the scroll direction. The spring is deliberately
  * soft and heavily damped so a fast flick lands without overshoot.
  */
-export function Parallax({ children, distance = 34, className }: ParallaxProps) {
+export function Parallax({ children, distance = 46, className }: ParallaxProps) {
   const ref = useRef<HTMLDivElement>(null);
   const scale = useMotionScale();
 
@@ -198,8 +221,8 @@ export function ScrollScale({
     offset: ["start 0.98", "start 0.55"],
   });
 
-  const s = useTransform(scrollYProgress, [0, 1], [1 - 0.03 * scale, 1]);
-  const opacity = useTransform(scrollYProgress, [0, 1], [1 - 0.25 * scale, 1]);
+  const s = useTransform(scrollYProgress, [0, 1], [1 - 0.045 * scale, 1]);
+  const opacity = useTransform(scrollYProgress, [0, 1], [1 - 0.32 * scale, 1]);
   const smoothScale = useSpring(s, { stiffness: 70, damping: 28, restDelta: 0.001 });
 
   return (

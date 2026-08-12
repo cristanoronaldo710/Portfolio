@@ -158,7 +158,9 @@ Warm cream paper, animated film grain, and a cinematic vignette over a
 monochrome ink scale with a single deep-blue accent. Inter for text, JetBrains
 Mono for labels. One dark panel (the stack wall) breaks the page rhythm.
 
-- **Type** — Inter + JetBrains Mono via `next/font`, tightened tracking on display sizes
+- **Type** — Instrument Serif for headings (single 400 weight — never apply
+  `font-semibold` to `.display-type`, the browser will fake-bold and wreck the
+  letterforms), Inter for body, JetBrains Mono for labels, all via `next/font`
 - **Colour** — tokens live in the `@theme` block in [`src/app/globals.css`](src/app/globals.css)
 - **Grain** — SVG `feTurbulence` baked to a data URI, drifted in steps so it boils like film stock
 - **Contrast** — every text pair clears WCAG AA (body ~5.2:1, headings ~16:1)
@@ -177,8 +179,11 @@ section and it will just work. The scroll-progress bar uses
 
 ### Motion
 
-All in [`src/components/motion.tsx`](src/components/motion.tsx) — `Reveal`,
-`Stagger`, `Parallax`, `ScrollScale`, plus a `GlassSheen` cursor highlight.
+Core primitives in [`src/components/motion.tsx`](src/components/motion.tsx) —
+`Reveal`, `Stagger`, `Parallax`, `ScrollScale`, plus a `GlassSheen` cursor
+highlight. Two more live in their own files: `SplitHeading` (word-level scroll
+parallax on section titles) and `PinnedAboutReveal` (the sticky paragraph
+crossfade in About).
 
 **Motion adapts to the device.** Scroll travel is measured in pixels, so one
 setting feels gentle on a tall desktop display and violent on a phone.
@@ -189,10 +194,28 @@ setting feels gentle on a tall desktop display and violent on a phone.
 | `prefers-reduced-motion` | 0 — transforms removed entirely |
 | Touch device (`pointer: coarse`) | 0.4 — momentum scrolling makes parallax unstable |
 | Viewport under 760px tall | 0.7 |
-| Roomy desktop | 1.0 |
+| Roomy desktop (`scale === 1`) | 1.0 |
 
 Springs are soft and heavily damped so a fast flick lands without overshoot.
 Everything animates `transform` and `opacity` only — no layout thrash.
+
+**The pinned About reveal** (`scale === 1` only — a pin eats real scroll
+distance and reads as janky on touch) sticks the paragraph column in place
+while the page scrolls past it, crossfading through `profile.about` one
+paragraph at a time. Everywhere else gets the plain stacked list — same
+content, no pin. Add or remove a paragraph in `profile.ts` and the reveal
+re-paces itself automatically.
+
+**`useJsProgress`** (in `motion.tsx`) is a required wrapper, not decoration.
+A target-based `useScroll()` silently upgrades to a native CSS
+ScrollTimeline on browsers that support one — a real perf win for a plain
+0→1 range, but it does not compose correctly with a downstream `useTransform`
+whose input range is narrower or offset from `[0, 1]` (e.g. one paragraph's
+`[0.75, 0.8, 1]` slice of the pin). The native timeline drives the value
+directly outside the JS clamp path and produces the wrong output outside its
+own segment. Route any `scrollYProgress` through `useJsProgress()` before
+feeding it into a `useTransform` that doesn't span the full range — every
+custom-ranged transform in this codebase already does.
 
 ## Deploying
 

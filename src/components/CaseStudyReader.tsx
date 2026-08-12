@@ -5,6 +5,7 @@ import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import { useEffect, useRef } from "react";
 import type { Project } from "@/content/profile";
 import { EASE } from "./motion";
+import { ProjectVisual } from "./ProjectVisual";
 import { RichText } from "./RichText";
 import { CloseIcon } from "./icons";
 
@@ -137,6 +138,11 @@ export function CaseStudyReader({
                             fill
                             sizes="(min-width: 768px) 720px, 100vw"
                             className="object-cover"
+                          />
+                        ) : project.theme ? (
+                          <ProjectVisual
+                            icon={project.theme.icon}
+                            accent={project.theme.accent}
                           />
                         ) : (
                           <div className="absolute inset-0 grid place-items-center bg-[linear-gradient(135deg,#f3efe6_0%,#e6ded0_48%,#efe9dd_100%)]">

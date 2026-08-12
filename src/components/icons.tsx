@@ -97,6 +97,69 @@ export function WhatsAppIcon({ className }: IconProps) {
   );
 }
 
+/** Play glyph in a circle — media / video projects. */
+export function PlayIcon({ className }: IconProps) {
+  return (
+    <svg viewBox="0 0 16 16" {...base} className={className}>
+      <circle cx="8" cy="8" r="6" />
+      <path d="M6.75 5.5v5l4-2.5z" fill="currentColor" stroke="none" />
+    </svg>
+  );
+}
+
+/** Shield with a check — focus / protection projects. */
+export function ShieldIcon({ className }: IconProps) {
+  return (
+    <svg viewBox="0 0 16 16" {...base} className={className}>
+      <path d="M8 2 13 3.6v3.9c0 3.5-2.2 5.9-5 6.5-2.8-.6-5-3-5-6.5V3.6z" />
+      <path d="M5.75 7.75 7.25 9.25 10.25 6" />
+    </svg>
+  );
+}
+
+/** Coffee cup with steam — cafe / hospitality projects. */
+export function CupIcon({ className }: IconProps) {
+  return (
+    <svg viewBox="0 0 16 16" {...base} className={className}>
+      <path d="M3.5 6.5h7v3.25a3.5 3.5 0 0 1-3.5 3.5 3.5 3.5 0 0 1-3.5-3.5z" />
+      <path d="M10.5 7.25h1a1.75 1.75 0 0 1 0 3.5h-1" />
+      <path d="M5.5 2.75c0 .55-.5.55-.5 1.1M8 2.75c0 .55-.5.55-.5 1.1" />
+    </svg>
+  );
+}
+
+/** Crossed blades — barber / booking projects. */
+export function ScissorsIcon({ className }: IconProps) {
+  return (
+    <svg viewBox="0 0 16 16" {...base} className={className}>
+      <circle cx="4.25" cy="4.25" r="1.5" />
+      <circle cx="4.25" cy="11.75" r="1.5" />
+      <path d="M5.6 5.3 13 12.5M5.6 10.7 13 3.5" />
+    </svg>
+  );
+}
+
+/** Three columns — kanban / board projects. */
+export function KanbanIcon({ className }: IconProps) {
+  return (
+    <svg viewBox="0 0 16 16" {...base} className={className}>
+      <rect x="2.25" y="2.5" width="3" height="11" rx="1" />
+      <rect x="6.5" y="2.5" width="3" height="7" rx="1" />
+      <rect x="10.75" y="2.5" width="3" height="9" rx="1" />
+    </svg>
+  );
+}
+
+/** Perforated ticket stub — ticketing / ITSM projects. */
+export function TicketIcon({ className }: IconProps) {
+  return (
+    <svg viewBox="0 0 16 16" {...base} className={className}>
+      <path d="M2.5 5.75a1.15 1.15 0 1 0 0-2.3V3a1 1 0 0 1 1-1h9a1 1 0 0 1 1 1v.45a1.15 1.15 0 1 0 0 2.3v3.5a1.15 1.15 0 1 0 0 2.3V13a1 1 0 0 1-1 1h-9a1 1 0 0 1-1-1v-.45a1.15 1.15 0 1 0 0-2.3z" />
+      <path d="M8 3v1.3M8 6.35v1.3M8 9.7v1.3M8 13v-1" />
+    </svg>
+  );
+}
+
 /** Certificate seal, for the credentials list. */
 export function BadgeIcon({ className }: IconProps) {
   return (
