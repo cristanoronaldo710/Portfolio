@@ -56,7 +56,6 @@ export function SplitHeading({ text, as = "h2", id, className }: SplitHeadingPro
       <Word
         word={word}
         index={index}
-        total={words.length}
         progress={scrollYProgress}
         scale={scale}
       />
@@ -78,13 +77,11 @@ export function SplitHeading({ text, as = "h2", id, className }: SplitHeadingPro
 function Word({
   word,
   index,
-  total,
   progress,
   scale,
 }: {
   word: string;
   index: number;
-  total: number;
   progress: MotionValue<number>;
   scale: number;
 }) {

@@ -45,6 +45,26 @@ export function CommandPalette() {
     );
   }, [query]);
 
+  /* Reset the highlight whenever the query changes — adjusted inline during
+     render rather than in an effect, so there's no extra render pass and no
+     one-frame flash of the old index against the new filtered list. React's
+     own recommended pattern for "derived state that resets on a dependency
+     change": https://react.dev/learn/you-might-not-need-an-effect */
+  const [queryForIndex, setQueryForIndex] = useState(query);
+  if (query !== queryForIndex) {
+    setQueryForIndex(query);
+    setActiveIndex(0);
+  }
+
+  /* Shared by both entry points (the "/" key and the discoverability
+     button) so neither can drift out of sync with the other. Resetting the
+     query here — rather than in an effect keyed on `open` — also resets
+     activeIndex for free, via the render-time adjustment above. */
+  function openPalette() {
+    setOpen(true);
+    setQuery("");
+  }
+
   useEffect(() => {
     function isTyping() {
       const el = document.activeElement;
@@ -60,7 +80,7 @@ export function CommandPalette() {
     function onKeyDown(event: KeyboardEvent) {
       if (!open && event.key === "/" && !isTyping()) {
         event.preventDefault();
-        setOpen(true);
+        openPalette();
         return;
       }
 
@@ -86,16 +106,8 @@ export function CommandPalette() {
   }, [open, results, activeIndex]);
 
   useEffect(() => {
-    if (open) {
-      setQuery("");
-      setActiveIndex(0);
-      inputRef.current?.focus();
-    }
+    if (open) inputRef.current?.focus();
   }, [open]);
-
-  useEffect(() => {
-    setActiveIndex(0);
-  }, [query]);
 
   function select(item: Item) {
     setOpen(false);
@@ -111,7 +123,7 @@ export function CommandPalette() {
       {/* Discoverability — a small always-visible trigger, bottom-left. */}
       <button
         type="button"
-        onClick={() => setOpen(true)}
+        onClick={openPalette}
         aria-label="Open command palette"
         className="fixed bottom-5 left-4 z-[65] hidden min-h-9 cursor-pointer items-center gap-1.5 rounded-lg border border-line bg-subtle/80 px-3 font-mono text-xs text-ink-muted backdrop-blur-xl transition-colors duration-300 hover:border-line-soft hover:text-ink sm:inline-flex"
       >

@@ -1,7 +1,7 @@
 "use client";
 
 import { AnimatePresence, motion } from "framer-motion";
-import { useEffect, useState } from "react";
+import { useSyncExternalStore } from "react";
 import { EASE } from "./motion";
 import { MoonIcon, SunIcon } from "./icons";
 
@@ -9,32 +9,46 @@ import { MoonIcon, SunIcon } from "./icons";
  * Dark is the CSS default (see globals.css), so this only ever needs to add
  * or remove `data-theme="light"` on <html> — never set "dark" explicitly.
  * The blocking script in layout.tsx applies the stored choice before first
- * paint, so this component's initial render just has to read the DOM state
- * it already set, not decide it fresh (avoids a hydration mismatch).
+ * paint, so the initial snapshot below just has to read the DOM state it
+ * already set, not decide it fresh (avoids a hydration mismatch).
+ *
+ * Reads/writes through useSyncExternalStore rather than useState+useEffect:
+ * syncing DOM state into useState via an effect always costs two renders —
+ * once with the wrong SSR-default value, then again once the effect
+ * corrects it. Reading the DOM directly in getSnapshot does it in one.
  */
-export function ThemeToggle({ onNight = false }: { onNight?: boolean }) {
-  const [isLight, setIsLight] = useState(false);
 
-  useEffect(() => {
-    setIsLight(document.documentElement.dataset.theme === "light");
-  }, []);
+const listeners = new Set<() => void>();
 
-  function toggle() {
-    const next = !isLight;
-    setIsLight(next);
+function getSnapshot() {
+  return document.documentElement.dataset.theme === "light";
+}
 
-    if (next) {
-      document.documentElement.setAttribute("data-theme", "light");
-    } else {
-      document.documentElement.removeAttribute("data-theme");
-    }
+function getServerSnapshot() {
+  return false;
+}
 
-    try {
-      localStorage.setItem("theme", next ? "light" : "dark");
-    } catch {
-      // Private browsing or storage disabled — theme just won't persist.
-    }
+function subscribe(callback: () => void) {
+  listeners.add(callback);
+  return () => listeners.delete(callback);
+}
+
+function setLight(next: boolean) {
+  if (next) {
+    document.documentElement.setAttribute("data-theme", "light");
+  } else {
+    document.documentElement.removeAttribute("data-theme");
   }
+  try {
+    localStorage.setItem("theme", next ? "light" : "dark");
+  } catch {
+    // Private browsing or storage disabled — theme just won't persist.
+  }
+  listeners.forEach((listener) => listener());
+}
+
+export function ThemeToggle({ onNight = false }: { onNight?: boolean }) {
+  const isLight = useSyncExternalStore(subscribe, getSnapshot, getServerSnapshot);
 
   return (
     <button
@@ -42,7 +56,7 @@ export function ThemeToggle({ onNight = false }: { onNight?: boolean }) {
       role="switch"
       aria-checked={isLight}
       aria-label={isLight ? "Switch to dark theme" : "Switch to light theme"}
-      onClick={toggle}
+      onClick={() => setLight(!isLight)}
       className={`relative inline-flex size-11 shrink-0 cursor-pointer items-center justify-center rounded-lg border transition-colors duration-300 ${
         onNight
           ? "border-white/10 bg-white/[0.04] text-night-muted hover:border-white/20 hover:text-night-ink"

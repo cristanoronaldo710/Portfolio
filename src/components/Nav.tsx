@@ -45,6 +45,12 @@ export function Nav() {
   useMotionValueEvent(scrollY, "change", sync);
 
   useEffect(() => {
+    /* Must run post-mount: darkPanels.current is only populated once
+       TechWall/Contact have committed to the DOM (the effect above), and
+       their layout — needed for the intersection check inside sync — isn't
+       measurable any earlier than that either. There's no derive-during-
+       render alternative when the read genuinely depends on committed DOM. */
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     sync(window.scrollY);
   }, [sync]);
 

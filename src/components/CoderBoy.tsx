@@ -1,9 +1,40 @@
 "use client";
 
 import { AnimatePresence, motion } from "framer-motion";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, useSyncExternalStore } from "react";
 import { EASE } from "./motion";
 import { isJokeVoiceEnabled } from "./useJokeVoice";
+
+/* Whether the chase effect should run at all: a fine pointer to chase, and
+   no reduced-motion preference (this is pure decoration, so "off" — not
+   "slower" — is the correct reduced state). Subscribed live via
+   matchMedia's own change event, so plugging in a mouse or toggling the OS
+   reduced-motion setting mid-session takes effect immediately, rather than
+   only being checked once on mount. */
+const FINE_POINTER_QUERY = "(pointer: fine)";
+const REDUCED_MOTION_QUERY = "(prefers-reduced-motion: reduce)";
+
+function getChaseEnabledSnapshot() {
+  return (
+    window.matchMedia(FINE_POINTER_QUERY).matches &&
+    !window.matchMedia(REDUCED_MOTION_QUERY).matches
+  );
+}
+
+function getChaseEnabledServerSnapshot() {
+  return false;
+}
+
+function subscribeChaseEnabled(callback: () => void) {
+  const fineMql = window.matchMedia(FINE_POINTER_QUERY);
+  const reduceMql = window.matchMedia(REDUCED_MOTION_QUERY);
+  fineMql.addEventListener("change", callback);
+  reduceMql.addEventListener("change", callback);
+  return () => {
+    fineMql.removeEventListener("change", callback);
+    reduceMql.removeEventListener("change", callback);
+  };
+}
 
 /**
  * A cursor-following companion — the same interaction pattern as the classic
@@ -72,7 +103,11 @@ function speakJoke(text: string) {
 }
 
 export function CoderBoy() {
-  const [enabled, setEnabled] = useState(false);
+  const enabled = useSyncExternalStore(
+    subscribeChaseEnabled,
+    getChaseEnabledSnapshot,
+    getChaseEnabledServerSnapshot,
+  );
   const [joke, setJoke] = useState<string | null>(null);
 
   const rootRef = useRef<HTMLDivElement>(null);
@@ -83,15 +118,6 @@ export function CoderBoy() {
   const rafRef = useRef(0);
   const jokeTimersRef = useRef<ReturnType<typeof setTimeout>[]>([]);
   const lastJokeIndexRef = useRef(-1);
-
-  useEffect(() => {
-    /* A mouse-chase effect is meaningless on touch, and skipped outright
-       under reduced-motion rather than just slowed down — this one is pure
-       decoration, not information, so "off" is the correct reduced state. */
-    const hasFinePointer = window.matchMedia("(pointer: fine)").matches;
-    const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    setEnabled(hasFinePointer && !reduce);
-  }, []);
 
   useEffect(() => {
     if (!enabled) return;
