@@ -210,17 +210,17 @@ body {
 
 [data-cb-state="walk"] .cb-leg-a {
   animation: coder-boy-leg-a 0.35s ease-in-out infinite;
-  transform-origin: 17px 29px;
+  transform-origin: 18.5px 28px;
 }
 
 [data-cb-state="walk"] .cb-leg-b {
   animation: coder-boy-leg-b 0.35s ease-in-out infinite;
-  transform-origin: 23px 29px;
+  transform-origin: 24.5px 28px;
 }
 
 [data-cb-state="idle"] .cb-hand {
   animation: coder-boy-type 0.5s ease-in-out infinite;
-  transform-origin: 24px 25px;
+  transform-origin: 26px 23px;
 }
 
 .cb-cursor {
