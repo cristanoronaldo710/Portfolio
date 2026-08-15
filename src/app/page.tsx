@@ -7,6 +7,7 @@ import { Background } from "@/components/Background";
 import { Contact } from "@/components/Contact";
 import { Assistant } from "@/components/Assistant";
 import { CommandPalette } from "@/components/CommandPalette";
+import { CoderBoy } from "@/components/CoderBoy";
 
 export default function Home() {
   return (
@@ -22,6 +23,7 @@ export default function Home() {
       </main>
       <Assistant />
       <CommandPalette />
+      <CoderBoy />
     </>
   );
 }

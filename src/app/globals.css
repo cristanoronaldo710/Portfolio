@@ -201,6 +201,57 @@ body {
   margin-inline: auto;
 }
 
+/* ── Coder Boy — cursor companion ─────────────────────────────
+   Limb/torso motion only; CoderBoy.tsx's rAF loop drives position and
+   flips data-cb-state, never the animation itself. */
+[data-cb-state="walk"] .cb-body {
+  animation: coder-boy-bob 0.35s ease-in-out infinite;
+}
+
+[data-cb-state="walk"] .cb-leg-a {
+  animation: coder-boy-leg-a 0.35s ease-in-out infinite;
+  transform-origin: 17px 29px;
+}
+
+[data-cb-state="walk"] .cb-leg-b {
+  animation: coder-boy-leg-b 0.35s ease-in-out infinite;
+  transform-origin: 23px 29px;
+}
+
+[data-cb-state="idle"] .cb-hand {
+  animation: coder-boy-type 0.5s ease-in-out infinite;
+  transform-origin: 24px 25px;
+}
+
+.cb-cursor {
+  animation: coder-boy-blink 1s steps(1) infinite;
+}
+
+@keyframes coder-boy-bob {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-2px); }
+}
+
+@keyframes coder-boy-leg-a {
+  0%, 100% { transform: rotate(0deg); }
+  50% { transform: rotate(18deg); }
+}
+
+@keyframes coder-boy-leg-b {
+  0%, 100% { transform: rotate(0deg); }
+  50% { transform: rotate(-18deg); }
+}
+
+@keyframes coder-boy-type {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(1.5px); }
+}
+
+@keyframes coder-boy-blink {
+  0%, 45% { opacity: 1; }
+  50%, 100% { opacity: 0; }
+}
+
 /* ── Film grain ────────────────────────────────────────────────
    Fine fractal noise rasterised once from an SVG data URI, then drifted in
    steps so it "boils" like real film stock. Blend mode flips with the
