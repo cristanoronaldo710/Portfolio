@@ -188,17 +188,17 @@ export function SlashIcon({ className }: IconProps) {
   );
 }
 
-/** Small bird in flight — the ambient-sound toggle. */
-export function BirdIcon({ className }: IconProps) {
+/** Speaker with sound waves — "read jokes aloud" is on. */
+export function SpeakerOnIcon({ className }: IconProps) {
   return (
     <svg viewBox="0 0 16 16" {...base} className={className}>
-      <path d="M1.5 8.5c1.5-2 3-2 4 0 1-2 2.5-2.5 4-1.5 1.2.8 2 .6 3-.5" />
-      <path d="M8 7.5C9.5 6 11.5 5.5 14.5 6" />
+      <path d="M2 6.5h2.5L8 4v8L4.5 9.5H2z" />
+      <path d="M10.8 5.5a4 4 0 0 1 0 5M12.6 3.8a6.5 6.5 0 0 1 0 8.4" />
     </svg>
   );
 }
 
-/** Speaker with an X — muted state of the ambient toggle. */
+/** Speaker with an X — "read jokes aloud" is off. */
 export function SpeakerMuteIcon({ className }: IconProps) {
   return (
     <svg viewBox="0 0 16 16" {...base} className={className}>

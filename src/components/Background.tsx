@@ -31,7 +31,7 @@ export function Background() {
             <ol className="mt-8">
               {experience.map((entry, index) => (
                 <Reveal key={`${entry.org}-${index}`} delay={index * 0.05}>
-                  <li className="grid gap-x-8 gap-y-2 border-t border-line-soft py-8 sm:grid-cols-[10rem_minmax(0,1fr)]">
+                  <li className="grid grid-cols-1 gap-x-8 gap-y-2 border-t border-line-soft py-8 sm:grid-cols-[10rem_minmax(0,1fr)]">
                     <p className="font-mono text-xs uppercase tracking-[0.14em] tabular-nums text-ink-muted sm:pt-1.5">
                       {entry.period}
                     </p>
@@ -59,7 +59,7 @@ export function Background() {
             <ol className="mt-8">
               {education.map((entry, index) => (
                 <Reveal key={`${entry.school}-${index}`} delay={index * 0.05}>
-                  <li className="grid gap-x-8 gap-y-2 border-t border-line-soft py-8 sm:grid-cols-[10rem_minmax(0,1fr)]">
+                  <li className="grid grid-cols-1 gap-x-8 gap-y-2 border-t border-line-soft py-8 sm:grid-cols-[10rem_minmax(0,1fr)]">
                     <p className="font-mono text-xs uppercase tracking-[0.14em] tabular-nums text-ink-muted sm:pt-1.5">
                       {entry.period}
                     </p>
@@ -84,7 +84,7 @@ export function Background() {
         {certifications.length > 0 && (
           <div>
             <GroupLabel>Certifications</GroupLabel>
-            <ul className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+            <ul className="mt-8 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
               {certifications.map((cert, index) => (
                 <Reveal key={`${cert.name}-${index}`} delay={index * 0.05}>
                   <CertificationCard cert={cert} />
@@ -143,7 +143,7 @@ function CertificationCard({ cert }: { cert: Certification }) {
 
       <div className="mt-auto flex items-end justify-between gap-3 pt-5">
         {cert.credentialId ? (
-          <p className="font-mono text-[11px] text-ink-muted">
+          <p className="min-w-0 break-all font-mono text-[11px] text-ink-muted">
             ID {cert.credentialId}
           </p>
         ) : (

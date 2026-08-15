@@ -26,7 +26,7 @@ export function Work() {
         the details users actually feel.
       </SectionHeading>
 
-      <div className="mt-20 grid gap-6 sm:grid-cols-2">
+      <div className="mt-20 grid grid-cols-1 gap-6 sm:grid-cols-2">
         {projects.map((project, index) => (
           <ScrollScale
             key={project.slug}

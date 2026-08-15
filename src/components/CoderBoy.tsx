@@ -3,6 +3,7 @@
 import { AnimatePresence, motion } from "framer-motion";
 import { useEffect, useRef, useState } from "react";
 import { EASE } from "./motion";
+import { isJokeVoiceEnabled } from "./useJokeVoice";
 
 /**
  * A cursor-following companion — the same interaction pattern as the classic
@@ -52,6 +53,23 @@ const JOKES = [
   "!false — it's funny because it's true.",
   "A byte walks into a bar looking miserable. The bartender asks what's wrong. “Parity error,” it says.",
 ];
+
+/**
+ * Speaks a joke aloud if the visitor has turned that on (JokeVoiceToggle,
+ * off by default). Cancels whatever utterance is already in flight first —
+ * jokes are short and 14-30s apart, but this keeps two from ever overlapping
+ * if the interval and speech duration happen to collide.
+ */
+function speakJoke(text: string) {
+  if (!isJokeVoiceEnabled()) return;
+  if (typeof window === "undefined" || !("speechSynthesis" in window)) return;
+
+  window.speechSynthesis.cancel();
+  const utterance = new SpeechSynthesisUtterance(text);
+  utterance.rate = 1.02;
+  utterance.pitch = 1.1;
+  window.speechSynthesis.speak(utterance);
+}
 
 export function CoderBoy() {
   const [enabled, setEnabled] = useState(false);
@@ -134,6 +152,7 @@ export function CoderBoy() {
         }
         lastJokeIndexRef.current = index;
         setJoke(JOKES[index]);
+        speakJoke(JOKES[index]);
 
         const hideId = setTimeout(() => {
           setJoke(null);
@@ -149,6 +168,9 @@ export function CoderBoy() {
     return () => {
       jokeTimersRef.current.forEach(clearTimeout);
       jokeTimersRef.current = [];
+      if (typeof window !== "undefined" && "speechSynthesis" in window) {
+        window.speechSynthesis.cancel();
+      }
     };
   }, [enabled]);
 

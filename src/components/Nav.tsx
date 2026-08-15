@@ -5,7 +5,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { profile } from "@/content/profile";
 import { ScrollProgress } from "./motion";
 import { ThemeToggle } from "./ThemeToggle";
-import { AmbientSound } from "./AmbientSound";
+import { JokeVoiceToggle } from "./JokeVoiceToggle";
 
 const links = [
   { label: "Stack", href: "#stack" },
@@ -103,7 +103,7 @@ export function Nav() {
           </ul>
 
           <div className={`flex items-center gap-2.5 ${onDark ? "on-night" : ""}`}>
-            <AmbientSound onNight={onDark} />
+            <JokeVoiceToggle onNight={onDark} />
             <ThemeToggle onNight={onDark} />
 
             <motion.a

@@ -50,7 +50,7 @@ export function PinnedAboutReveal({ paragraphs, aside }: PinnedAboutRevealProps)
       className="relative"
     >
       <div className={pinned ? "sticky top-20 flex min-h-[70vh] items-center" : undefined}>
-        <div className="grid w-full gap-16 lg:grid-cols-[minmax(0,1fr)_minmax(0,26rem)] lg:gap-24">
+        <div className="grid w-full grid-cols-1 gap-16 lg:grid-cols-[minmax(0,1fr)_minmax(0,26rem)] lg:gap-24">
           {pinned ? (
             <div className="relative min-h-[13rem] pl-7 sm:pl-9">
               <div className="absolute inset-y-0 left-0 flex flex-col justify-center gap-2.5">

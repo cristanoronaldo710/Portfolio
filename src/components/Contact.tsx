@@ -45,7 +45,7 @@ export function Contact() {
               className="heading-tight mt-5 max-w-[18ch] text-balance text-[clamp(1.875rem,4.5vw,3rem)] text-night-ink"
             />
 
-            <div className="mt-10 grid gap-12 lg:grid-cols-[minmax(0,1fr)_minmax(0,20rem)] lg:gap-16">
+            <div className="mt-10 grid grid-cols-1 gap-12 lg:grid-cols-[minmax(0,1fr)_minmax(0,20rem)] lg:gap-16">
               <div>
                 <p className="mb-8 max-w-[46ch] text-lg leading-relaxed text-night-muted">
                   Got a role, a project, or a half-formed idea? Send it over and

@@ -115,7 +115,7 @@ export function CaseStudyReader({
                   {project.caseStudy.stack.map((item) => (
                     <li
                       key={item.name}
-                      className="grid gap-x-6 gap-y-1 py-4 sm:grid-cols-[9rem_minmax(0,1fr)]"
+                      className="grid grid-cols-1 gap-x-6 gap-y-1 py-4 sm:grid-cols-[9rem_minmax(0,1fr)]"
                     >
                       <p className="font-mono text-xs uppercase tracking-[0.14em] text-ink sm:pt-1">
                         {item.name}

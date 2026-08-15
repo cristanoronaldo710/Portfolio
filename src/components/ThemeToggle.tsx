@@ -43,7 +43,7 @@ export function ThemeToggle({ onNight = false }: { onNight?: boolean }) {
       aria-checked={isLight}
       aria-label={isLight ? "Switch to dark theme" : "Switch to light theme"}
       onClick={toggle}
-      className={`relative inline-flex size-9 shrink-0 cursor-pointer items-center justify-center rounded-lg border transition-colors duration-300 ${
+      className={`relative inline-flex size-11 shrink-0 cursor-pointer items-center justify-center rounded-lg border transition-colors duration-300 ${
         onNight
           ? "border-white/10 bg-white/[0.04] text-night-muted hover:border-white/20 hover:text-night-ink"
           : "border-line bg-subtle text-ink-muted hover:border-line-soft hover:text-ink"
