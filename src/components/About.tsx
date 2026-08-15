@@ -48,7 +48,7 @@ export function About() {
     <section
       id="about"
       aria-labelledby="about-heading"
-      className="mx-auto max-w-6xl px-6 py-24 sm:px-8 sm:py-32"
+      className="container-wide px-6 py-24 sm:px-8 sm:py-32"
     >
       <SectionHeading eyebrow="03 — About" title="How I work." id="about-heading" />
 

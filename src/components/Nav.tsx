@@ -4,6 +4,8 @@ import { motion, useMotionValueEvent, useScroll } from "framer-motion";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { profile } from "@/content/profile";
 import { ScrollProgress } from "./motion";
+import { ThemeToggle } from "./ThemeToggle";
+import { AmbientSound } from "./AmbientSound";
 
 const links = [
   { label: "Stack", href: "#stack" },
@@ -27,9 +29,9 @@ export function Nav() {
     );
   }, []);
 
-  /* Invert the bar whenever a dark panel is passing underneath it. Reading
-     rects viewport-relative avoids any scroll-offset maths, and with only a
-     couple of panels the per-tick layout read is negligible. */
+  /* Invert the bar whenever a permanently-dark panel (Stack, Contact) is
+     passing underneath it — independent of the page's own light/dark
+     toggle, since those two panels don't follow it. */
   const sync = useCallback((latest: number) => {
     setScrolled(latest > 24);
     setOnDark(
@@ -52,7 +54,7 @@ export function Nav() {
 
       <a
         href="#main"
-        className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-50 focus:rounded-full focus:bg-ink focus:px-5 focus:py-2.5 focus:text-sm focus:text-canvas"
+        className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-50 focus:rounded-lg focus:bg-ink focus:px-5 focus:py-2.5 focus:text-sm focus:text-canvas"
       >
         Skip to content
       </a>
@@ -66,13 +68,13 @@ export function Nav() {
           scrolled
             ? onDark
               ? "border-b border-white/10 bg-night/50 backdrop-blur-2xl backdrop-saturate-150"
-              : "border-b border-line-soft/70 bg-canvas/50 backdrop-blur-2xl backdrop-saturate-150"
+              : "border-b border-line-soft/70 bg-canvas/60 backdrop-blur-2xl backdrop-saturate-150"
             : "border-b border-transparent bg-transparent"
         }`}
       >
         <nav
           aria-label="Primary"
-          className="mx-auto flex h-16 max-w-6xl items-center justify-between gap-6 px-6 sm:px-8"
+          className="container-wide flex h-16 items-center justify-between gap-6 px-6 sm:px-8"
         >
           <a
             href="#main"
@@ -88,7 +90,7 @@ export function Nav() {
               <li key={link.href}>
                 <a
                   href={link.href}
-                  className={`inline-flex min-h-11 cursor-pointer items-center rounded-full px-3.5 text-sm transition-colors duration-500 ${
+                  className={`inline-flex min-h-11 cursor-pointer items-center rounded-lg px-3.5 text-sm transition-colors duration-500 ${
                     onDark
                       ? "text-night-muted hover:text-night-ink"
                       : "text-ink-muted hover:text-ink"
@@ -100,17 +102,20 @@ export function Nav() {
             ))}
           </ul>
 
-          <motion.a
-            href="#contact"
-            whileHover={{ scale: 1.04 }}
-            whileTap={{ scale: 0.96 }}
-            transition={{ type: "spring", stiffness: 400, damping: 22 }}
-            className={`inline-flex min-h-10 cursor-pointer items-center rounded-full px-5 text-sm font-medium transition-colors duration-500 ${
-              onDark ? "bg-night-ink text-night" : "bg-ink text-canvas"
-            }`}
-          >
-            Contact
-          </motion.a>
+          <div className={`flex items-center gap-2.5 ${onDark ? "on-night" : ""}`}>
+            <AmbientSound onNight={onDark} />
+            <ThemeToggle onNight={onDark} />
+
+            <motion.a
+              href="#contact"
+              whileHover={{ scale: 1.03 }}
+              whileTap={{ scale: 0.97 }}
+              transition={{ type: "spring", stiffness: 400, damping: 22 }}
+              className="btn btn-primary"
+            >
+              Contact
+            </motion.a>
+          </div>
         </nav>
       </motion.header>
     </>

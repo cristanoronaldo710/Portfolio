@@ -19,7 +19,7 @@ export function Work() {
     <section
       id="work"
       aria-labelledby="work-heading"
-      className="mx-auto max-w-6xl px-6 py-24 sm:px-8 sm:py-32"
+      className="container-wide px-6 py-24 sm:px-8 sm:py-32"
     >
       <SectionHeading eyebrow="02 — Work" title="Things I've built." id="work-heading">
         A few projects that show how I think about structure, performance, and
@@ -71,7 +71,19 @@ function ProjectCard({
             read as having depth as you scroll past it. */}
         <Parallax distance={9} className="flex flex-1 flex-col">
           <div className="flex flex-1 flex-col bg-canvas p-7 sm:p-8">
-            <div className="flex items-start justify-between gap-4">
+            <div className="flex items-center gap-2.5">
+              <span className="font-mono text-[11px] tabular-nums text-ink-muted">
+                PRJ-{String(index + 1).padStart(3, "0")}
+              </span>
+              {project.href && (
+                <span className="inline-flex items-center gap-1.5 rounded-full border border-accent/25 bg-accent/10 px-2 py-0.5 font-mono text-[10px] uppercase tracking-[0.08em] text-accent">
+                  <span className="size-1 rounded-full bg-accent" />
+                  Live
+                </span>
+              )}
+            </div>
+
+            <div className="mt-2 flex items-start justify-between gap-4">
               <div>
                 <h3 className="text-xl font-semibold tracking-[-0.02em] text-ink sm:text-2xl">
                   {project.title}
@@ -94,7 +106,7 @@ function ProjectCard({
               {project.tags.map((tag) => (
                 <li
                   key={tag}
-                  className="rounded-full border border-line-soft bg-subtle px-3 py-1 font-mono text-[11px] tracking-wide text-ink-muted"
+                  className="rounded-md border border-line-soft bg-subtle px-2.5 py-1 font-mono text-[11px] tracking-wide text-ink-muted"
                 >
                   {tag}
                 </li>
@@ -102,14 +114,10 @@ function ProjectCard({
             </ul>
 
             {(project.href || project.repo || project.caseStudy) && (
-              <div className="mt-7 flex flex-wrap items-center gap-3 border-t border-line-soft pt-6">
+              <div className="mt-7 flex flex-wrap items-center gap-2.5 border-t border-line-soft pt-6">
                 {project.caseStudy && (
-                  <button
-                    type="button"
-                    onClick={onOpen}
-                    className="group/cta inline-flex min-h-11 cursor-pointer items-center gap-2 rounded-full bg-ink px-5 text-sm font-medium text-canvas transition-opacity duration-300 hover:opacity-85"
-                  >
-                    <ReadIcon className="size-4" />
+                  <button type="button" onClick={onOpen} className="btn btn-primary">
+                    <ReadIcon className="size-3.5" />
                     Read case study
                   </button>
                 )}
@@ -118,24 +126,15 @@ function ProjectCard({
                     href={project.href}
                     target="_blank"
                     rel="noreferrer noopener"
-                    className={`inline-flex min-h-11 cursor-pointer items-center gap-2 rounded-full px-5 text-sm transition-all duration-300 ${
-                      project.caseStudy
-                        ? "border border-line text-ink-soft hover:border-ink-muted hover:text-ink"
-                        : "bg-ink font-medium text-canvas hover:opacity-85"
-                    }`}
+                    className={project.caseStudy ? "btn" : "btn btn-primary"}
                   >
                     Live site
                     <ArrowIcon className="size-3.5" />
                   </a>
                 )}
                 {project.repo && (
-                  <a
-                    href={project.repo}
-                    target="_blank"
-                    rel="noreferrer noopener"
-                    className="inline-flex min-h-11 cursor-pointer items-center gap-2 rounded-full border border-line px-5 text-sm text-ink-soft transition-colors duration-300 hover:border-ink-muted hover:text-ink"
-                  >
-                    <CodeIcon className="size-4" />
+                  <a href={project.repo} target="_blank" rel="noreferrer noopener" className="btn">
+                    <CodeIcon className="size-3.5" />
                     Source
                   </a>
                 )}

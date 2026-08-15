@@ -90,7 +90,7 @@ export function TechWall() {
         className="pointer-events-none absolute inset-0 -z-10"
       />
 
-      <div className="mx-auto max-w-6xl px-6 sm:px-8">
+      <div className="container-wide px-6 sm:px-8">
         <div className="flex flex-wrap items-end justify-between gap-x-10 gap-y-6">
           <div>
             <Reveal>
@@ -103,7 +103,7 @@ export function TechWall() {
               as="h2"
               id="stack-heading"
               text="The tools I reach for."
-              className="display-type mt-4 text-balance text-[clamp(2rem,5vw,3.75rem)] text-night-ink"
+              className="heading-tight mt-3 text-balance text-[clamp(1.625rem,3.5vw,2.5rem)] text-night-ink"
             />
           </div>
 

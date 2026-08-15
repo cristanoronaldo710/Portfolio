@@ -9,7 +9,7 @@ type Errors = Partial<Record<"name" | "email" | "message" | "form", string>>;
 type Contact = { email: string | null; phone: string | null };
 
 const FIELD =
-  "min-h-12 w-full rounded-xl border border-white/12 bg-white/[0.04] px-4 text-[15px] text-night-ink outline-none transition-colors duration-300 placeholder:text-night-muted/70 focus:border-white/35 focus:bg-white/[0.07]";
+  "min-h-12 w-full rounded-lg border border-white/12 bg-white/[0.04] px-4 text-[15px] text-night-ink outline-none transition-colors duration-300 placeholder:text-night-muted/70 focus:border-white/35 focus:bg-white/[0.07]";
 
 export function EnquiryForm() {
   const reduce = useReducedMotion();
@@ -189,7 +189,7 @@ export function EnquiryForm() {
           <button
             type="submit"
             disabled={status === "sending"}
-            className="group inline-flex min-h-13 w-full cursor-pointer items-center justify-center gap-2.5 rounded-full bg-night-ink px-8 text-[15px] font-medium text-night transition-opacity duration-300 hover:opacity-90 disabled:cursor-wait disabled:opacity-60 sm:w-auto"
+            className="btn btn-primary group w-full !min-h-13 disabled:cursor-wait disabled:opacity-60 sm:w-auto"
           >
             {status === "sending" ? "Sending…" : "Send enquiry"}
             {status !== "sending" && (

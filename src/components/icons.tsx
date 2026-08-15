@@ -160,6 +160,54 @@ export function TicketIcon({ className }: IconProps) {
   );
 }
 
+/** Sun, for switching to light theme. */
+export function SunIcon({ className }: IconProps) {
+  return (
+    <svg viewBox="0 0 16 16" {...base} className={className}>
+      <circle cx="8" cy="8" r="3" />
+      <path d="M8 1.5v1.5M8 13v1.5M3.5 3.5l1 1M11.5 11.5l1 1M1.5 8h1.5M13 8h1.5M3.5 12.5l1-1M11.5 4.5l1-1" />
+    </svg>
+  );
+}
+
+/** Moon, for switching to dark theme. */
+export function MoonIcon({ className }: IconProps) {
+  return (
+    <svg viewBox="0 0 16 16" {...base} className={className}>
+      <path d="M13.5 9.3A5.75 5.75 0 1 1 6.7 2.5a4.6 4.6 0 0 0 6.8 6.8Z" />
+    </svg>
+  );
+}
+
+/** Forward slash, for the command-palette shortcut hint. */
+export function SlashIcon({ className }: IconProps) {
+  return (
+    <svg viewBox="0 0 16 16" {...base} className={className}>
+      <path d="M10.5 2.5 5.5 13.5" />
+    </svg>
+  );
+}
+
+/** Small bird in flight — the ambient-sound toggle. */
+export function BirdIcon({ className }: IconProps) {
+  return (
+    <svg viewBox="0 0 16 16" {...base} className={className}>
+      <path d="M1.5 8.5c1.5-2 3-2 4 0 1-2 2.5-2.5 4-1.5 1.2.8 2 .6 3-.5" />
+      <path d="M8 7.5C9.5 6 11.5 5.5 14.5 6" />
+    </svg>
+  );
+}
+
+/** Speaker with an X — muted state of the ambient toggle. */
+export function SpeakerMuteIcon({ className }: IconProps) {
+  return (
+    <svg viewBox="0 0 16 16" {...base} className={className}>
+      <path d="M2 6.5h2.5L8 4v8L4.5 9.5H2z" />
+      <path d="m10.5 6 3 4M13.5 6l-3 4" />
+    </svg>
+  );
+}
+
 /** Certificate seal, for the credentials list. */
 export function BadgeIcon({ className }: IconProps) {
   return (

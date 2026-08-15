@@ -16,7 +16,7 @@ export function Background() {
     <section
       id="background"
       aria-labelledby="background-heading"
-      className="mx-auto max-w-6xl px-6 py-24 sm:px-8 sm:py-32"
+      className="container-wide px-6 py-24 sm:px-8 sm:py-32"
     >
       <SectionHeading
         eyebrow="04 — Background"

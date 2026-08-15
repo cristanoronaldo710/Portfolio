@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from "next";
-import { Inter, Instrument_Serif, JetBrains_Mono } from "next/font/google";
+import { Inter, JetBrains_Mono } from "next/font/google";
 import { profile } from "@/content/profile";
 import "./globals.css";
 
@@ -9,21 +9,10 @@ const inter = Inter({
   display: "swap",
 });
 
-/* Display face for headings. Ships a single 400 weight — hierarchy comes from
-   size and tracking, never font-weight, or the browser will synthesise a fake
-   bold and wreck the letterforms. */
-const instrumentSerif = Instrument_Serif({
-  variable: "--font-instrument",
-  subsets: ["latin"],
-  weight: "400",
-  style: ["normal", "italic"],
-  display: "swap",
-});
-
 const jetbrainsMono = JetBrains_Mono({
   variable: "--font-jetbrains",
   subsets: ["latin"],
-  weight: ["400", "500"],
+  weight: ["400", "500", "600"],
   display: "swap",
 });
 
@@ -64,9 +53,25 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
-  themeColor: "#faf8f4",
-  colorScheme: "light",
+  themeColor: [
+    { media: "(prefers-color-scheme: light)", color: "#faf8f4" },
+    { media: "(prefers-color-scheme: dark)", color: "#121316" },
+  ],
+  colorScheme: "dark light",
 };
+
+/* Sets data-theme before first paint so there's no flash of the wrong
+   theme. Dark is the CSS default (no attribute needed), so this only has
+   to act when the visitor previously chose light — the common case does
+   nothing. A plain synchronous <script>, not type="module" or defer, so it
+   runs during HTML parsing, before the body paints. */
+const themeInitScript = `
+try {
+  if (localStorage.getItem("theme") === "light") {
+    document.documentElement.setAttribute("data-theme", "light");
+  }
+} catch (e) {}
+`;
 
 export default function RootLayout({
   children,
@@ -74,10 +79,10 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html
-      lang="en"
-      className={`${inter.variable} ${instrumentSerif.variable} ${jetbrainsMono.variable} h-full`}
-    >
+    <html lang="en" className={`${inter.variable} ${jetbrainsMono.variable} h-full`}>
+      <head>
+        <script dangerouslySetInnerHTML={{ __html: themeInitScript }} />
+      </head>
       <body className="min-h-full">
         {children}
         {/* Cinematic overlays sit above content but never intercept input. */}

@@ -28,12 +28,12 @@ export function SectionHeading({
         as="h2"
         id={id}
         text={title}
-        className="display-type mt-5 max-w-[20ch] text-balance text-[clamp(2.25rem,6vw,4.5rem)] text-ink"
+        className="heading-tight mt-4 max-w-[24ch] text-balance text-[clamp(1.75rem,4vw,2.5rem)] text-ink"
       />
 
       {children && (
         <Reveal delay={0.15}>
-          <div className="mt-6 max-w-[52ch] text-lg leading-relaxed text-ink-muted">
+          <div className="mt-5 max-w-[52ch] leading-relaxed text-ink-muted">
             {children}
           </div>
         </Reveal>

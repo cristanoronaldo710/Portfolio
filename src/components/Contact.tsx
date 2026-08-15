@@ -15,7 +15,7 @@ export function Contact() {
     <section
       id="contact"
       aria-labelledby="contact-heading"
-      className="mx-auto max-w-6xl px-6 pb-16 pt-24 sm:px-8 sm:pt-32"
+      className="container-wide px-6 pb-16 pt-24 sm:px-8 sm:pt-32"
     >
       <Reveal>
         <div
@@ -42,7 +42,7 @@ export function Contact() {
               as="h2"
               id="contact-heading"
               text="Let's build something."
-              className="display-type mt-6 max-w-[16ch] text-balance text-[clamp(2.25rem,6.5vw,5rem)] text-night-ink"
+              className="heading-tight mt-5 max-w-[18ch] text-balance text-[clamp(1.875rem,4.5vw,3rem)] text-night-ink"
             />
 
             <div className="mt-10 grid gap-12 lg:grid-cols-[minmax(0,1fr)_minmax(0,20rem)] lg:gap-16">
@@ -66,7 +66,7 @@ export function Contact() {
                   whileHover={reduce ? undefined : { scale: 1.02 }}
                   whileTap={{ scale: 0.98 }}
                   transition={{ type: "spring", stiffness: 400, damping: 22 }}
-                  className="group mt-4 inline-flex min-h-13 w-full cursor-pointer items-center gap-3 rounded-full border border-white/12 bg-white/[0.05] px-5 text-[15px] text-night-ink backdrop-blur-xl transition-colors duration-300 hover:border-[#25D366]/50 hover:bg-[#25D366]/10"
+                  className="btn group mt-4 w-full !min-h-13 !justify-start !gap-3 !px-5 hover:!border-[#25D366]/40"
                 >
                   <WhatsAppIcon className="size-5 shrink-0 text-[#25D366]" />
                   <span className="flex-1 text-left">
@@ -108,11 +108,15 @@ export function Contact() {
         </div>
       </Reveal>
 
-      <footer className="mt-10 flex flex-wrap items-center justify-between gap-x-8 gap-y-3 text-sm text-ink-muted">
+      <footer className="mt-10 flex flex-wrap items-center justify-between gap-x-8 gap-y-3 font-mono text-xs text-ink-muted">
         <p>
-          &copy; {new Date().getFullYear()} {profile.name}
+          &copy; {new Date().getFullYear()} {profile.name} &middot; built with
+          Next.js &amp; Tailwind CSS
         </p>
-        <p className="font-mono text-xs">Built with Next.js &amp; Tailwind CSS</p>
+        <p>
+          <kbd className="rounded border border-line bg-subtle px-1.5 py-0.5">/</kbd>{" "}
+          to navigate
+        </p>
       </footer>
     </section>
   );

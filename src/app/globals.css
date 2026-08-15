@@ -2,35 +2,160 @@
 @import "devicon/devicon.min.css";
 
 @theme {
-  /* Warm paper base — cream rather than clinical white. */
-  --color-canvas: #faf8f4;
-  --color-canvas-deep: #f4f0e8;
-  --color-subtle: #f2eee7;
-  --color-line: #ddd6ca;
-  --color-line-soft: #e9e3d9;
+  /* Dark is the default surface now — quieter, flatter, engineered.
+     Light is available via the toggle; see [data-theme="light"] below. */
+  --color-canvas: #121316;
+  --color-canvas-deep: #0d0e11;
+  --color-subtle: #1a1c20;
+  --color-line: rgba(255, 255, 255, 0.1);
+  --color-line-soft: rgba(255, 255, 255, 0.07);
 
-  /* Warm ink scale — every pair clears WCAG AA on cream. */
-  --color-ink: #1c1a17;
-  --color-ink-soft: #45403a;
-  --color-ink-muted: #6f6862;
+  --color-ink: #f3f4f6;
+  --color-ink-soft: #b8bcc4;
+  --color-ink-muted: #82868f;
 
-  /* Dark panel */
+  /* Permanently-dark panels (Stack, Contact) — a deliberate break in rhythm,
+     independent of the light/dark toggle above. */
   --color-night: #0b0a09;
   --color-night-soft: #17151280;
   --color-night-line: #2d2924;
   --color-night-ink: #f5f1e8;
   --color-night-muted: #a39c92;
 
-  --color-accent: #1552b8;
+  --color-accent: #4f8cff;
 
   --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
-  --font-display: var(--font-instrument), ui-serif, Georgia, serif;
   --font-mono: var(--font-jetbrains), ui-monospace, "SF Mono", monospace;
 
   --ease-out-quint: cubic-bezier(0.22, 1, 0.36, 1);
 }
 
+/* ── Light theme ───────────────────────────────────────────────
+   Same warm cream palette the site launched with, now the alternate
+   rather than the default. Toggled via ThemeToggle, persisted to
+   localStorage, applied before paint by the inline script in layout.tsx. */
+:root[data-theme="light"] {
+  --color-canvas: #faf8f4;
+  --color-canvas-deep: #f4f0e8;
+  --color-subtle: #f2eee7;
+  --color-line: #ddd6ca;
+  --color-line-soft: #e9e3d9;
+
+  --color-ink: #1c1a17;
+  --color-ink-soft: #45403a;
+  --color-ink-muted: #6f6862;
+
+  --color-accent: #1552b8;
+}
+
+/* ── Tactile button system ────────────────────────────────────
+   Small, mono-labelled, with an inset "pressed" shadow rather than a flat
+   fill — reads as a physical control, not a link styled to look like one.
+   Tokens flip with the theme; the structure (inset shadow, 1px border,
+   10px radius) stays the same in both. */
 :root {
+  --btn-bg: #16181d;
+  --btn-bg-hover: #1c1f25;
+  --btn-bg-active: #0d0e11;
+  --btn-border: rgba(255, 255, 255, 0.1);
+  --btn-border-hover: rgba(255, 255, 255, 0.18);
+  --btn-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.04), inset 0 -1px 2px rgba(0, 0, 0, 0.5);
+  --btn-shadow-active: inset 0 2px 4px rgba(0, 0, 0, 0.6);
+}
+
+:root[data-theme="light"] {
+  --btn-bg: #ffffff;
+  --btn-bg-hover: #fbfaf7;
+  --btn-bg-active: #f2eee7;
+  --btn-border: #ddd6ca;
+  --btn-border-hover: #c9c0b0;
+  --btn-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.7), inset 0 -1px 2px rgba(28, 26, 23, 0.06);
+  --btn-shadow-active: inset 0 2px 4px rgba(28, 26, 23, 0.1);
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  min-height: 2.75rem;
+  padding: 0 1.15rem;
+  border-radius: 10px;
+  font-family: var(--font-mono);
+  font-size: 0.8125rem;
+  letter-spacing: 0.01em;
+  cursor: pointer;
+  white-space: nowrap;
+  border: 1px solid var(--btn-border);
+  background-color: var(--btn-bg);
+  color: var(--color-ink);
+  box-shadow: var(--btn-shadow);
+  transition:
+    transform 150ms var(--ease-out-quint),
+    box-shadow 150ms var(--ease-out-quint),
+    border-color 150ms var(--ease-out-quint),
+    background-color 150ms var(--ease-out-quint);
+}
+
+.btn:hover {
+  border-color: var(--btn-border-hover);
+  background-color: var(--btn-bg-hover);
+}
+
+.btn:active {
+  background-color: var(--btn-bg-active);
+  box-shadow: var(--btn-shadow-active);
+  transform: translateY(1px);
+}
+
+/* Filled, ink-on-canvas — the one loud control per view. */
+.btn-primary {
+  background-color: var(--color-ink);
+  color: var(--color-canvas);
+  border-color: transparent;
+  box-shadow: none;
+}
+
+.btn-primary:hover {
+  opacity: 0.88;
+  background-color: var(--color-ink);
+}
+
+.btn-primary:active {
+  opacity: 1;
+  transform: translateY(1px);
+}
+
+/* On a permanently-dark panel (Stack, Contact), buttons need to stay dark
+   regardless of the global theme toggle — these panels never flip to light,
+   so their button chrome can't inherit the light-mode token values. */
+.on-night {
+  --btn-bg: #16181d;
+  --btn-bg-hover: #1c1f25;
+  --btn-bg-active: #0d0e11;
+  --btn-border: rgba(255, 255, 255, 0.1);
+  --btn-border-hover: rgba(255, 255, 255, 0.18);
+  --btn-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.04), inset 0 -1px 2px rgba(0, 0, 0, 0.5);
+  --btn-shadow-active: inset 0 2px 4px rgba(0, 0, 0, 0.6);
+}
+
+/* .btn's default text colour reads the page's --color-ink, which flips with
+   the light/dark toggle — but this panel's background never does, so the
+   text needs to be pinned to the night palette instead. */
+.on-night .btn {
+  color: var(--color-night-ink);
+}
+
+.on-night .btn-primary {
+  background-color: var(--color-night-ink);
+  color: var(--color-night);
+}
+
+:root {
+  color-scheme: dark;
+}
+
+:root[data-theme="light"] {
   color-scheme: light;
 }
 
@@ -42,43 +167,63 @@ html {
 
 body {
   position: relative;
-  /* Warm wash rather than a flat fill — the page reads as lit, not printed. */
   background-color: var(--color-canvas);
-  background-image:
-    radial-gradient(ellipse 80% 50% at 50% -10%, #fffdf9 0%, transparent 60%),
-    radial-gradient(ellipse 60% 40% at 100% 20%, #f6efe2 0%, transparent 65%),
-    radial-gradient(ellipse 70% 45% at 0% 60%, #f3f1ea 0%, transparent 62%);
+  /* A single, quiet highlight rather than a heavy wash — restraint reads as
+     engineered, not decorated. Swapped for the warmer light-mode version
+     below. */
+  background-image: radial-gradient(ellipse 70% 45% at 50% -10%, rgba(79, 140, 255, 0.06) 0%, transparent 60%);
   background-attachment: fixed;
   color: var(--color-ink);
   font-family: var(--font-sans);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   overflow-x: hidden;
+  transition: background-color 300ms var(--ease-out-quint), color 300ms var(--ease-out-quint);
+}
+
+:root[data-theme="light"] body {
+  background-image:
+    radial-gradient(ellipse 80% 50% at 50% -10%, #fffdf9 0%, transparent 60%),
+    radial-gradient(ellipse 60% 40% at 100% 20%, #f6efe2 0%, transparent 65%),
+    radial-gradient(ellipse 70% 45% at 0% 60%, #f3f1ea 0%, transparent 62%);
+}
+
+/* Narrow, reading-width column for prose-heavy sections — a deliberate
+   departure from the old full-bleed grid width, borrowed from the reference
+   site's single-column restraint. */
+.container-prose {
+  max-width: 48rem;
+  margin-inline: auto;
+}
+
+.container-wide {
+  max-width: 64rem;
+  margin-inline: auto;
 }
 
 /* ── Film grain ────────────────────────────────────────────────
-   Fine fractal noise rasterised once from an SVG data URI, then
-   drifted in steps so it "boils" like real film stock.
-
-   Sized to 130% rather than the viewport so the drift never exposes
-   an edge, while keeping the blended layer small enough to composite
-   cheaply — a full-screen blend forces the page into one compositing
-   group, so its area matters for scroll performance. */
+   Fine fractal noise rasterised once from an SVG data URI, then drifted in
+   steps so it "boils" like real film stock. Blend mode flips with the
+   theme: multiply darkens a light page correctly, screen is what makes the
+   same noise read as light hitting a dark surface instead of dirt on it. */
 .grain-layer {
   position: fixed;
   inset: -15%;
   z-index: 60;
   pointer-events: none;
-  opacity: 0.3;
-  mix-blend-mode: multiply;
+  opacity: 0.16;
+  mix-blend-mode: screen;
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.38'/%3E%3C/svg%3E");
   animation: grain-drift 1s steps(1) infinite;
   will-change: transform;
   contain: strict;
 }
 
-/* Translate in whole pixels on a composited layer — percentages would
-   resample the noise every step and soften it into mush. */
+:root[data-theme="light"] .grain-layer {
+  opacity: 0.3;
+  mix-blend-mode: multiply;
+}
+
 @keyframes grain-drift {
   0% { transform: translate3d(0, 0, 0); }
   20% { transform: translate3d(-6px, -4px, 0); }
@@ -88,37 +233,38 @@ body {
   100% { transform: translate3d(0, 0, 0); }
 }
 
-/* Phones gain the least from the boil and pay the most for it. */
 @media (max-width: 767px) {
   .grain-layer {
     animation: none;
+    opacity: 0.12;
+  }
+
+  :root[data-theme="light"] .grain-layer {
     opacity: 0.24;
   }
 }
 
-/* Cinematic vignette — pulls the eye toward the centre column. */
+/* Vignette — neutral on dark, warm-brown on light (matching that theme's
+   paper-and-ink feel). */
 .vignette-layer {
   position: fixed;
   inset: 0;
   z-index: 59;
   pointer-events: none;
-  background: radial-gradient(
-    ellipse 92% 78% at 50% 45%,
-    transparent 55%,
-    rgba(52, 42, 28, 0.09) 100%
-  );
+  background: radial-gradient(ellipse 92% 78% at 50% 45%, transparent 55%, rgba(0, 0, 0, 0.28) 100%);
 }
 
-/* Display type. A serif at large sizes needs far less negative tracking than a
-   grotesque — Inter wanted -0.035em, Instrument Serif falls apart past -0.02em
-   because the thin strokes start colliding. */
-.display-type {
-  font-family: var(--font-display);
-  font-weight: 400;
-  letter-spacing: -0.018em;
-  line-height: 1;
-  /* Never let the browser fake a heavier weight; only 400 exists. */
-  font-synthesis-weight: none;
+:root[data-theme="light"] .vignette-layer {
+  background: radial-gradient(ellipse 92% 78% at 50% 45%, transparent 55%, rgba(52, 42, 28, 0.09) 100%);
+}
+
+/* Tight, restrained heading treatment — replaces the old large display-serif
+   scale. Hierarchy comes from size and this one consistent tracking value,
+   not from switching typefaces. */
+.heading-tight {
+  font-weight: 600;
+  letter-spacing: -0.03em;
+  line-height: 1.08;
 }
 
 :focus-visible {
@@ -132,8 +278,8 @@ body {
 }
 
 ::selection {
-  background-color: var(--color-ink);
-  color: var(--color-canvas);
+  background-color: var(--color-accent);
+  color: #ffffff;
 }
 
 [class^="devicon-"],
