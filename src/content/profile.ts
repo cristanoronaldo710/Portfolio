@@ -50,7 +50,7 @@ export const profile = {
 
 export const socials = [
   { label: "LinkedIn", href: "https://www.linkedin.com/in/yash-more-8b9272361/" },
-  { label: "GitHub", href: "https://github.com/" },
+  { label: "GitHub", href: "https://github.com/cristanoronaldo710" },
 ];
 
 /** Ready-to-use wa.me link with the greeting pre-filled. */
